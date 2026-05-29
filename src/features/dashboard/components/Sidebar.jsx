@@ -19,11 +19,11 @@ export default function Sidebar() {
     <aside className="w-64 bg-[#0d121f] text-[#94a3b8] flex flex-col justify-between p-6 border-r border-[#1e293b]">
       <div>
         {/* Logo */}
-        <div className="flex items-center gap-0.5 mb-10 pl-2"> 
+        <div className="flex items-center justify-center gap-1.5 mb-10 w-full"> 
           <img 
             src={logoImg} 
             alt="TaskFlow Logo" 
-            className="w-25 h-19 object-contain" 
+            className="w-12 h-12 object-contain" 
           />
           <span className="text-white font-bold text-xl tracking-wide">TaskFlow</span>
         </div>
