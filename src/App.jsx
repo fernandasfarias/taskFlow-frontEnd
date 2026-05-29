@@ -1,14 +1,19 @@
-import './App.css'
+import React from 'react';
+import Sidebar from './features/dashboard/components/Sidebar';
 
-function App() {
-
+export default function App() {
   return (
-    <>
-      <div className="min-h-screen flex items-center justify-center">
-        <h1  className="text-5xl font-bold p-6 rounded-xl">Tailwind está funcionando</h1>
-      </div>
-    </>
-  )
-}
+    
+    <div className="flex h-screen w-screen bg-[#090d16] overflow-hidden">
+      
+      
+      <Sidebar />
 
-export default App
+      {/* Espaço em branco temporário */}
+      <div className="flex-1 p-8 text-gray-500 font-sans">
+        O conteúdo do Dashboard vai aparecer aqui depois.
+      </div>
+
+    </div>
+  );
+}
