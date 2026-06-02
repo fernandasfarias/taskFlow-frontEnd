@@ -29,6 +29,16 @@ getProjects: async() =>{
         throw error;
     }
     
+},
+
+getUserProfile: async () => {
+  try {
+    const response = await API.get('/user');
+    return response.data; // objeto: { name: 'Alice Silva', role: 'Project Manager', avatarUrl: '...' }
+  } catch (error) {
+    console.error("Erro ao buscar perfil do usuário:", error);
+    throw error;
+  }
 }
 
 }

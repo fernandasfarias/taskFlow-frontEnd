@@ -19,7 +19,7 @@ export default function Sidebar() {
     <aside className="w-64 bg-[#0d121f] text-[#94a3b8] flex flex-col justify-between p-6 border-r border-[#1e293b]">
       <div>
         {/* Logo */}
-        <div className="flex items-center justify-center gap-1.5 mb-10 w-full"> 
+        <div className="flex items-center gap-1.5 mb-10 w-full pl-2"> 
           <img 
             src={logoImg} 
             alt="TaskFlow Logo" 
@@ -50,13 +50,13 @@ export default function Sidebar() {
       <div className="flex items-center justify-between p-2 rounded-xl bg-[#141b2d] border border-[#1e293b]">
         <div className="flex items-center gap-3">
           <img 
-            src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" 
-            alt="Alice" 
+            src={user?.avatarUrl || "https://via.placeholder.com/100"} 
+            alt={user?.name} 
             className="w-10 h-10 rounded-full object-cover ring-2 ring-[#6366f1]"
           />
           <div className="text-left">
-            <h4 className="text-sm font-semibold text-white leading-tight">Alice Silva</h4>
-            <span className="text-xs text-gray-400">Project Manager</span>
+            <h4 className="text-sm font-semibold text-white leading-tight">{user?.name}</h4>
+            <span className="text-xs text-gray-400">{user?.role}</span>
           </div>
         </div>
         <MdKeyboardArrowDown className="cursor-pointer hover:text-white" size={20} />
