@@ -2,8 +2,10 @@ import React from "react";
 import { HiOutlineHome, HiOutlineFolder, HiOutlineCalendar, HiOutlineClipboardList, HiOutlineChatAlt2, HiOutlineChartBar, HiOutlineAdjustments } from 'react-icons/hi';
 import { MdKeyboardArrowDown } from 'react-icons/md';
 import logoImg from '../../../assets/Frame2.png';
+import { useNavigate } from 'react-router-dom';
 
 export default function Sidebar({ user }) {
+    const navigate = useNavigate();
     
     const menuItems = [
     { name: 'Home', icon: <HiOutlineHome size={20} />, active: true },
@@ -47,7 +49,9 @@ export default function Sidebar({ user }) {
       </div>
 
       {/* Perfil do Usuário */}
-      <div className="flex items-center justify-between p-2 rounded-xl bg-[#141b2d] border border-[#1e293b]">
+      <div
+          onClick={() => navigate ('/profile')}
+          className="flex items-center justify-between p-2 rounded-xl bg-[#141b2d] border border-[#1e293b]">
         <div className="flex items-center gap-3">
           <img 
             src={user?.avatarUrl || "https://via.placeholder.com/100"} 
