@@ -3,7 +3,7 @@ import { HiOutlineHome, HiOutlineFolder, HiOutlineCalendar, HiOutlineClipboardLi
 import { MdKeyboardArrowDown } from 'react-icons/md';
 import logoImg from '../../../assets/Frame2.png';
 
-export default function Sidebar() {
+export default function Sidebar({ user }) {
     
     const menuItems = [
     { name: 'Home', icon: <HiOutlineHome size={20} />, active: true },

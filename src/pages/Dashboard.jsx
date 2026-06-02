@@ -1,9 +1,9 @@
 import React from 'react';
 
-import DashboardPage from '../features/dashboard/DashboardPage';
+import DashBoardPage from '../features/dashboard/DashBoardPage';
 
 export default function Dashboard() {
   return (
-    <DashboardPage />
+    <DashBoardPage />
   );
 }

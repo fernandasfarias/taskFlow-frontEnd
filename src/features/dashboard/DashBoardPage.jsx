@@ -53,12 +53,26 @@ export default function DashBoardPage() {
 
   return (
 
-    <div className="flex-1 flex flex-col bg-[#090d16] p-10 gap-8 overflow-y-auto h-screen">
+    
+    <div className="flex min-h-screen w-full bg-[#090d16] font-sans overflow-hidden">
       
-      <Header />
-      <StatsSection stats={stats} />
-      <ProjectsSection projects={projects} />
+      {/* Sidebar na lateral esquerda */}
+      <Sidebar user={user} />
       
+     
+      <div className="flex-1 flex flex-col p-10 gap-8 overflow-y-auto h-screen">
+        
+    
+        <Header userName={user.name} />
+        
+    
+        <StatsSection stats={stats} />
+        
+        {/* Seção de Projetos */}
+        <ProjectsSection projects={projects} />
+        
+      </div>
+
     </div>
   );
 }
