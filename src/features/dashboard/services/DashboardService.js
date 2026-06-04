@@ -9,7 +9,7 @@ const API = axios.create({
 
 
 export const DashboardService = {
-    // Função para buscar os dados do dashboard (estados do projeto)
+    // buscar os dados do dashboard 
 getStats : async() => { 
     try{
         const response = await API.get('/stats');
