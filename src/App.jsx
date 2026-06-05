@@ -1,9 +1,10 @@
 import React from 'react';
-import Dashboard from './pages/Dashboard';
+// import Dashboard from './pages/Dashboard';
+
+import Autenticacao from './pages/Autenticacao/index';
 
 export default function App() {
   return (
-    
-    <Dashboard />
+    <Autenticacao />
   );
 }
