@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useForm } from "react-hook-form";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
+
+import { useNavigate } from "react-router-dom";
+import { login } from "../../services/authService";
 
 const IMG_FUNDO = "/gradiente.png";
 const IMG_LOGO_COMPLETA = "/Frame1.svg"; 
@@ -108,8 +111,22 @@ interface FormProps { aoClicarCadastrar?: () => void; aoClicarLogin?: () => void
 function FormularioLogin({ aoClicarCadastrar }: FormProps) {
   const { register, handleSubmit, formState: { errors } } = useForm();
 
-  const enviarFormulario = (dados: any) => {
-    console.log("Interface de Login preenchida com:", dados);
+  const navigate = useNavigate();
+
+  const enviarFormulario = async (dados:any) => {
+    try {
+      const response = await login(dados.email, dados.senha);
+
+      console.log("RESPONSE COMPLETO:", response);
+      console.log("RESPONSE DATA:", response.data);
+
+      localStorage.setItem('token', response.token);
+      toast.success("Login realizado com sucesso!");
+      navigate('/dashboard');
+    } catch (error) {
+      console.log("ERRO COMPLETO:", error);
+      console.log("RESPONSE COMPLETO:", response);
+      toast.error("Email ou senha inválidos");}
   };
 
   return (
