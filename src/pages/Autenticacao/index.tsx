@@ -5,6 +5,7 @@ import toast, { Toaster } from "react-hot-toast";
 
 import { useNavigate } from "react-router-dom";
 import { login } from "../../services/authService";
+import { cadastroService } from "../../services/cadastroService";
 
 const IMG_FUNDO = "/gradiente.png";
 const IMG_LOGO_COMPLETA = "/Frame1.svg"; 
@@ -122,10 +123,13 @@ function FormularioLogin({ aoClicarCadastrar }: FormProps) {
 
       localStorage.setItem('token', response.token);
       toast.success("Login realizado com sucesso!");
+
       navigate('/dashboard');
     } catch (error) {
+
       console.log("ERRO COMPLETO:", error);
-      console.log("RESPONSE COMPLETO:", response);
+      console.log("RESPONSE COMPLETO:", error);
+
       toast.error("Email ou senha inválidos");}
   };
 
@@ -168,9 +172,35 @@ function FormularioLogin({ aoClicarCadastrar }: FormProps) {
 function FormularioCadastro({ aoClicarLogin }: FormProps) {
   const { register, handleSubmit, formState: { errors }, watch } = useForm();
   const senhaDigitada = watch("senha");
+  const navigate = useNavigate();
 
-  const enviarFormulario = (dados: any) => {
-    console.log("Interface de Cadastro preenchida com:", dados);
+  const enviarFormulario = async (dados: any) => {
+    try {
+      const response = await cadastroService(dados);
+
+      toast.success("Cadastrado com sucesso!");
+
+      const tipo = response.tipo;
+
+      switch(tipo){
+        case "PROJECT_MANAGER":
+          navigate("/onboarding/certificacoes?id=" + response.id);
+          break;
+
+        case "CLIENTE":
+          navigate("/onboarding/empresa?id=" + response.id);
+          break
+
+        case "COLABORADOR":
+          navigate("/onboarding/especialidades?id=" + response.id);
+          break;
+
+          default:
+            navigate("/login");
+      }
+    } catch (error) {
+      toast.error("Erro ao cadastrar");
+    }
   };
 
   return (
@@ -204,14 +234,14 @@ function FormularioCadastro({ aoClicarLogin }: FormProps) {
         <div>
           <div className="relative">
             <select 
-              {...register("tipoConta", { required: "Selecione um tipo!" })}
+              {...register("tipo", { required: "Selecione um tipo!" })}
               defaultValue=""
               className="w-full placeholder-[#98928A] bg-transparent text-base md:text-lg py-4 md:py-4 px-6 rounded-2xl md:rounded-3xl border-[2px] border-solid border-[#30363D] focus:border-[#7C3AED] focus:outline-none transition-colors font-normal text-[#98928A] appearance-none cursor-pointer"
             >
               <option value="" disabled hidden>Selecione o tipo da sua conta</option>
-              <option value="cliente" className="bg-[#161B22] text-white">Cliente</option>
-              <option value="colaborador" className="bg-[#161B22] text-white">Colaborador</option>
-              <option value="project_manager" className="bg-[#161B22] text-white">Project Manager</option>
+              <option value="CLIENTE" className="bg-[#161B22] text-white">Cliente</option>
+              <option value="COLABORADOR" className="bg-[#161B22] text-white">Colaborador</option>
+              <option value="PROJECT_MANAGER" className="bg-[#161B22] text-white">Project Manager</option>
             </select>
             {/* Setinha SVG embutida */}
             <div className="absolute inset-y-0 right-6 flex items-center pointer-events-none">
