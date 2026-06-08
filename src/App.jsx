@@ -1,12 +1,12 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
-import Autenticacao from './pages/Autenticacao/index';
 import DashBoardPage from './features/dashboard/DashBoardPage';
+import Autenticacao from './pages/Autenticacao/index';
 
 import Certificacoes from "./pages/onboarding/certificacoes/Certificacoes";
 import Empresa from "./pages/onboarding/empresa/Empresa";
 import Especialidades from "./pages/onboarding/especialidades/Especialidades";
+import RecuperarSenha from "./pages/recuperarSenha/RecuperarSenha";
 
 export default function App() {
   return (
@@ -14,6 +14,7 @@ export default function App() {
 
       <Route path="/" element={<Autenticacao />} />
       <Route path="/dashboard" element={<DashBoardPage />} />
+      <Route path="/recuperar-senha" element={<RecuperarSenha />} />
 
       {/* onboarding */}
       <Route path="/onboarding/certificacoes" element={<Certificacoes />}></Route>

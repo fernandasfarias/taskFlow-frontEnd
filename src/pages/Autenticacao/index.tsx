@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
+import { Link } from 'react-router-dom';
 
 import { useNavigate } from "react-router-dom";
 import { login } from "../../services/authService";
@@ -144,9 +145,11 @@ function FormularioLogin({ aoClicarCadastrar }: FormProps) {
         <Input placeholder="Sua senha" type="password" name="senha" register={register} errors={errors} />
         
         <div className="flex justify-end w-full">
-          <a href="#" className="text-sm text-[#98928A] hover:text-[#A78BFA] transition-colors mt-1">
+          <Link
+            to="/recuperar-senha" className="text-sm text-[#98928A] hover:text-[#A78BFA] transition-colors mt-1"
+          >
             Esqueci minha senha
-          </a>
+          </Link>
         </div>
 
         <button 
