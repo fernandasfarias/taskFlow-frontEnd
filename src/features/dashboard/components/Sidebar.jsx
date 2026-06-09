@@ -13,7 +13,7 @@ export default function Sidebar({ user, isOpen, setIsOpen }) {
     { name: 'Projetos', path: '/projetos', icon: <HiOutlineFolder size={20} /> },
     { name: 'Cronograma', path: '/cronograma', icon: <HiOutlineCalendar size={20} /> },
     { name: 'Kanban', path: '/kanban', icon: <HiOutlineClipboardList size={20} /> },
-    { name: 'Comunicações', path: '/comunicacoes', icon: <HiOutlineChatAlt2 size={20} /> },
+    { name: 'Chat', path: '/chat', icon: <HiOutlineChatAlt2 size={20} /> },
     { name: 'Relatórios', path: '/relatorios', icon: <HiOutlineChartBar size={20} /> },
     { name: 'Configurações', path: '/configuracoes', icon: <HiOutlineAdjustments size={20} /> },
   ];
