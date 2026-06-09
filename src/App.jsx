@@ -10,12 +10,17 @@ import Especialidades from "./pages/onboarding/especialidades/Especialidades";
 
 import Profile from "./pages/Perfil/Perfil";
 
+import RecuperarSenha from "./pages/recuperarSenha/RecuperarSenha";
+import RedefinirSenha from "./pages/redefinirSenha/RedefinirSenha";
+
 export default function App() {
   return (
     <Routes>
 
       {/* tela de login e tela de cadastro */}
       <Route path="/" element={<Autenticacao />} />
+      <Route path="/recuperar-senha" element={<RecuperarSenha />} />
+      <Route path="/redefinir-senha" element={<RedefinirSenha />} />
 
       {/* onboarding: cadastro das certificacoes, especialidades ou empresa do cliente*/}
       <Route path="/onboarding/certificacoes" element={<Certificacoes />}></Route>
