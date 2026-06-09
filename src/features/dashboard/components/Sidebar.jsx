@@ -3,6 +3,7 @@ import { HiOutlineHome, HiOutlineFolder, HiOutlineCalendar, HiOutlineClipboardLi
 import { MdKeyboardArrowDown } from 'react-icons/md';
 import logoImg from '../../../assets/Frame2.png';
 import { useNavigate } from 'react-router-dom';
+import fotoPerfil from "../../../assets/fotoPerfil.svg";
 
 export default function Sidebar({ user }) {
     const navigate = useNavigate();
@@ -18,12 +19,12 @@ export default function Sidebar({ user }) {
   ];
 
   return (
-    <aside className="w-64 bg-[#0d121f] text-[#94a3b8] flex flex-col justify-between p-6 border-r border-[#1e293b]">
+    <aside className="w-64 min-h-screen bg-[#0d121f] text-[#94a3b8] flex flex-col justify-between p-6 border-r border-[#1e293b]">
       <div>
         {/* Logo */}
         <div className="flex items-center gap-1.5 mb-10 w-full pl-2"> 
           <img 
-            src={logoImg} 
+            src={logoImg}
             alt="TaskFlow Logo" 
             className="w-12 h-12 object-contain" 
           />
@@ -54,7 +55,7 @@ export default function Sidebar({ user }) {
           className="flex items-center justify-between p-2 rounded-xl bg-[#141b2d] border border-[#1e293b]">
         <div className="flex items-center gap-3">
           <img 
-            src={user?.avatarUrl || "https://via.placeholder.com/100"} 
+            src={fotoPerfil}
             alt={user?.name} 
             className="w-10 h-10 rounded-full object-cover ring-2 ring-[#6366f1]"
           />
