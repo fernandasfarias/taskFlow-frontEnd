@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 export default function RecuperarSenha() {
   const [email, setEmail] = useState("");
   const [erro, setErro] = useState("");
+  const [sucesso, setSucesso] = useState("");
   const [carregando, setCarregando] = useState(false);
 
   function validarEmail(email: string) {
@@ -17,6 +18,7 @@ export default function RecuperarSenha() {
     e.preventDefault();
 
     setErro("");
+    setSucesso("");
 
     if (!email.trim()) {
       setErro("Informe seu e-mail.");
@@ -31,9 +33,10 @@ export default function RecuperarSenha() {
     try {
       setCarregando(true);
 
-      await solicitarRecuperacaoSenha(email);
+      const resposta = await solicitarRecuperacaoSenha(email);
 
-      toast.success("Se o e-mail existir, enviaremos as instruções de recuperação.");
+      setSucesso(resposta.mensagem || "Instruções de recuperação enviadas para seu e-mail, consultar a caixa de email e Spam");
+
     } catch (error) {
       console.error(error);
       setErro("Erro ao solicitar recuperação de senha.");
@@ -76,6 +79,12 @@ export default function RecuperarSenha() {
                 </p>
               )}
             </div>
+
+            {sucesso && (
+              <p className="text-green-400 text-sm">
+                {sucesso}
+              </p>
+            )}
 
             <button
               type="submit"
