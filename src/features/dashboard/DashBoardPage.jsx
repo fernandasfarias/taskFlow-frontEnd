@@ -45,8 +45,14 @@ export default function DashBoardPage() {
         // tela de carregamento enquanto o java responde
         if (loading) {
             return (
-            <div className="flex-1 flex items-center justify-center bg-[#090d16] text-white font-sans">
-                <p className="animate-pulse">Carregando informações do TaskFlow...</p>
+            <div className="min-h-screen w-full flex items-center justify-center bg-[#090d16] text-white font-sans">
+                <div className="flex flex-col items-center text-center">
+                    <img src="/Frame2.png" alt="TaskFlow" className="w-20 mb-6 animate-pulse"/>
+                    <h1 className="text-white text-2xl font-bold mb-2">
+                        TaskFlow
+                    </h1>
+                    <p className="text-slate-400">Preparando o seu ambiente...</p>
+                </div>
             </div>
             );
         }
