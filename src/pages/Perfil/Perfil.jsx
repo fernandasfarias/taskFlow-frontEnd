@@ -17,7 +17,7 @@ import { excluirConta } from "../../services/perfilService";
 
 export default function Profile(){
 
-    const [perfil, setPerfil] = useState({nome: "", email: "", senha: ""});
+    const [perfil, setPerfil] = useState({nome: "", email: "", senha: "", tipo: ""});
 
     // edição do nome
     const [editandoNome, setEditandoNome] = useState(false);
@@ -26,6 +26,8 @@ export default function Profile(){
     // edição do email
     const [editandoEmail, setEditandoEmail] = useState(false);
     const [novoEmail, setNovoEmail] = useState("");
+
+    const [isOpen, setIsOpen] = useState(false);
 
     // navegar para a tela de alterar senha
     const navigate = useNavigate();
@@ -85,7 +87,8 @@ export default function Profile(){
 
     return(
         <div className="flex min-h-screen bg-[#0d121f] text-[#94a3b8]">
-            <Sidebar />
+            <Sidebar user={{name: perfil.nome, role: perfil.tipo}}
+            isOpen={isOpen} setIsOpen={setIsOpen}/>
 
             <main className="flex-1 p-3 md:p-8">
                 <div className="w-full">
@@ -112,7 +115,7 @@ export default function Profile(){
                                 </>
                             ):(
                                 <>
-                                    <div className="flex items-center justify-center gap-2 mt-2 mb-5">
+                                    <div className="flex items-center justify-center gap-2 mt-2 mb-3">
                                         <h1 className="text-2xl font-semibold text-white">{perfil.nome}</h1>
                                         <LuPencil
                                             onClick={() => {setNovoNome(perfil.nome); setEditandoNome(true)}}
@@ -121,6 +124,11 @@ export default function Profile(){
                                 </>
                             )
                         }
+
+                        {/* TIPO DO USUÁRIO */}
+                        <div className="flex items-center justify-center gap-2 mt-2 mb-10">
+                            <h1 className="text-base text-white">{perfil?.tipo === "PROJECT_MANAGER"? "Project Manager": perfil?.tipo === "COLABORADOR"? "Colaborador": perfil?.tipo === "CLIENTE"? "Cliente": perfil?.tipo}</h1>
+                        </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {/*email*/}

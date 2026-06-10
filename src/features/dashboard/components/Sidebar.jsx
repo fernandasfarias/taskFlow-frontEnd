@@ -1,13 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { HiOutlineHome, HiOutlineFolder, HiOutlineCalendar, HiOutlineClipboardList, HiOutlineChatAlt2, HiOutlineChartBar, HiOutlineAdjustments, HiMenu, HiX } from 'react-icons/hi';
 import { MdKeyboardArrowDown } from 'react-icons/md';
 import logoImg from '../../../assets/Frame2.png';
 import { useNavigate, useLocation } from 'react-router-dom';
+import fotoPerfil from '../../../assets/fotoPerfil.svg';
+import { getPerfil } from "../../../services/perfilService";
 
 export default function Sidebar({ user, isOpen, setIsOpen }) {
   const navigate = useNavigate();
   const location = useLocation();
   
+  const [perfil, setPerfil] = useState(null);
+
+  useEffect(() => {
+    async function carregarPerfil(){
+      try{
+        const data = await getPerfil();
+        setPerfil(data);
+      }catch(error) {console.log(error);}
+    }
+    carregarPerfil();
+  }, []);
+
   const menuItems = [
     { name: 'Home', path: '/dashboard', icon: <HiOutlineHome size={20} /> },
     { name: 'Projetos', path: '/projetos', icon: <HiOutlineFolder size={20} /> },
@@ -85,13 +99,15 @@ export default function Sidebar({ user, isOpen, setIsOpen }) {
             className="flex items-center justify-between p-2 rounded-xl bg-[#141b2d] border border-[#1e293b] cursor-pointer">
           <div className="flex items-center gap-3">
             <img 
-              src={user?.avatarUrl || "https://via.placeholder.com/100"} 
-              alt={user?.name} 
+              src={fotoPerfil} 
+              alt={perfil?.nome} 
               className="w-10 h-10 rounded-full object-cover ring-2 ring-[#6366f1]"
             />
             <div className="text-left">
-              <h4 className="text-sm font-semibold text-white leading-tight">{user?.name}</h4>
-              <span className="text-xs text-gray-400">{user?.role}</span>
+              <h4 className="text-sm font-semibold text-white leading-tight truncate max-w-[120px]">{perfil?.nome}</h4>
+              <span className="text-xs text-gray-400">
+                        {perfil?.tipo === "PROJECT_MANAGER"? "Project Manager": perfil?.tipo === "COLABORADOR"? "Colaborador": perfil?.tipo === "CLIENTE"? "Cliente": perfil?.tipo}
+              </span>
             </div>
           </div>
           <MdKeyboardArrowDown className="cursor-pointer hover:text-white" size={20} />
