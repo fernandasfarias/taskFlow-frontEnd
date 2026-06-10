@@ -137,7 +137,7 @@ function FormularioLogin({ aoClicarCadastrar }: FormProps) {
   return (
     <>
       <img src={IMG_LOGO_ROXA} className="w-10 lg:w-12 mb-6 object-contain" alt="Logo" />
-      <h2 className="text-4xl lg:text-5xl font-bold mb-2 md:mb-3 text-white">Bem vindo de volta!</h2>
+      <h2 className="text-4xl lg:text-5xl font-bold mb-2 md:mb-3 text-white">Bem-vindo de volta!</h2>
       <p className="text-[#98928A] text-base md:text-lg lg:text-xl mb-8 md:mb-10 font-normal">Faça login para continuar.</p>
 
       <form onSubmit={handleSubmit(enviarFormulario)} className="w-full flex flex-col gap-4 text-white">

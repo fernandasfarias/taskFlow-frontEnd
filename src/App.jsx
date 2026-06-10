@@ -17,7 +17,7 @@ export default function App() {
   return (
     <Routes>
 
-      {/* tela de login e tela de cadastro */}
+      {/* tela de login, tela de cadastro e telas para redifinir as senhas.*/}
       <Route path="/" element={<Autenticacao />} />
       <Route path="/recuperar-senha" element={<RecuperarSenha />} />
       <Route path="/redefinir-senha" element={<RedefinirSenha />} />
