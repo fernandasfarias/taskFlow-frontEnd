@@ -13,6 +13,8 @@ import { useNavigate } from "react-router-dom";
 import { FaTrashAlt } from "react-icons/fa";
 import { SlLogout } from "react-icons/sl";
 
+import { excluirConta } from "../../services/perfilService";
+
 export default function Profile(){
 
     const [perfil, setPerfil] = useState({nome: "", email: "", senha: ""});
@@ -69,11 +71,16 @@ export default function Profile(){
         try {
             await excluirConta();
             localStorage.removeItem("token");
-            navigate("/login");
+            navigate("/");
         } catch (error){
             console.error(error);
             alert("Erro ao excluir a conta");
         }
+    }
+
+    const logout = () => {
+        localStorage.removeItem("token");
+        navigate("/");
     }
 
     return(
@@ -157,7 +164,8 @@ export default function Profile(){
                         <div className="mb-5 group bg-gradient-to-r from-[#4C1D95] via-[#9B5CFF] to-[#C084FC] p-[1px] rounded-xl opacity-40 hover:opacity-100 transition-all duration-300">
                             <div className="rounded-xl bg-[#0d121f] p-4 text-center cursor-pointer">
                                 <span className="text-xs uppercase tracking-wide text-slate-400 font-bold">SAIR DA CONTA</span>
-                                <div className="flex items-center justify-center gap-2 mt-2">
+                                <div onClick={logout}
+                                className="flex items-center justify-center gap-2 mt-2">
                                     <span className="text-base text-slate-300">LOGOUT</span>
                                     <SlLogout oclassName="text-lg text-slate-500 cursor-pointer transition-colors duration-200 hover:text-green-400"/>
                                 </div>
