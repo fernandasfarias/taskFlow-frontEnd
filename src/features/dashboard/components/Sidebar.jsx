@@ -1,71 +1,102 @@
 import React from "react";
-import { HiOutlineHome, HiOutlineFolder, HiOutlineCalendar, HiOutlineClipboardList, HiOutlineChatAlt2, HiOutlineChartBar, HiOutlineAdjustments } from 'react-icons/hi';
+import { HiOutlineHome, HiOutlineFolder, HiOutlineCalendar, HiOutlineClipboardList, HiOutlineChatAlt2, HiOutlineChartBar, HiOutlineAdjustments, HiMenu, HiX } from 'react-icons/hi';
 import { MdKeyboardArrowDown } from 'react-icons/md';
 import logoImg from '../../../assets/Frame2.png';
-import { useNavigate } from 'react-router-dom';
-import fotoPerfil from "../../../assets/fotoPerfil.svg";
+import { useNavigate, useLocation } from 'react-router-dom';
 
-export default function Sidebar({ user }) {
-    const navigate = useNavigate();
-    
-    const menuItems = [
-    { name: 'Home', icon: <HiOutlineHome size={20} />, active: true },
-    { name: 'Projetos', icon: <HiOutlineFolder size={20} /> },
-    { name: 'Cronograma', icon: <HiOutlineCalendar size={20} /> },
-    { name: 'Kanban', icon: <HiOutlineClipboardList size={20} /> },
-    { name: 'Comunicações', icon: <HiOutlineChatAlt2 size={20} /> },
-    { name: 'Relatórios', icon: <HiOutlineChartBar size={20} /> },
-    { name: 'Configurações', icon: <HiOutlineAdjustments size={20} /> },
+export default function Sidebar({ user, isOpen, setIsOpen }) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  const menuItems = [
+    { name: 'Home', path: '/dashboard', icon: <HiOutlineHome size={20} /> },
+    { name: 'Projetos', path: '/projetos', icon: <HiOutlineFolder size={20} /> },
+    { name: 'Cronograma', path: '/cronograma', icon: <HiOutlineCalendar size={20} /> },
+    { name: 'Kanban', path: '/kanban', icon: <HiOutlineClipboardList size={20} /> },
+    { name: 'Chat', path: '/chat', icon: <HiOutlineChatAlt2 size={20} /> },
+    { name: 'Relatórios', path: '/relatorios', icon: <HiOutlineChartBar size={20} /> },
+    { name: 'Configurações', path: '/configuracoes', icon: <HiOutlineAdjustments size={20} /> },
   ];
 
+  const handleNavigation = (path) => {
+    navigate(path);
+    // Fecha a sidebar no mobile após o clique
+    setIsOpen(false);
+  };
+
   return (
-    <aside className="w-64 min-h-screen bg-[#0d121f] text-[#94a3b8] flex flex-col justify-between p-6 border-r border-[#1e293b]">
-      <div>
-        {/* Logo */}
-        <div className="flex items-center gap-1.5 mb-10 w-full pl-2"> 
-          <img 
-            src={logoImg}
-            alt="TaskFlow Logo" 
-            className="w-12 h-12 object-contain" 
-          />
-          <span className="text-white font-bold text-xl tracking-wide">TaskFlow</span>
-        </div>
+    <>
+      {/* Botão para abrir no mobile */}
+      <button 
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-[#1e293b] rounded-lg text-white"
+        onClick={() => setIsOpen(true)}
+      >
+        <HiMenu size={24} />
+      </button>
 
-        {/* Menu Navegação */}
-        <nav className="space-y-2">
-          {menuItems.map((item, index) => (
-            <button
-              key={index}
-              className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 font-medium ${
-                item.active 
-                  ? 'bg-gradient-to-r from-[#6366f1] to-[#a855f7] text-white shadow-lg shadow-[#6366f1]/20' 
-                  : 'hover:bg-[#1e293b] hover:text-white'
-              }`}
-            >
-              {item.icon}
-              <span>{item.name}</span>
+      {/* Overlay (fundo escuro) */}
+      {isOpen && (
+        <div 
+          className="lg:hidden fixed inset-0 bg-black/50 z-40" 
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside className={`
+        fixed lg:static inset-y-0 left-0 z-50 w-64 bg-[#0d121f] text-[#94a3b8] flex flex-col justify-between p-6 border-r border-[#1e293b]
+        transform transition-transform duration-300 ease-in-out
+        ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+      `}>
+        <div>
+          {/* Logo + Botão de fechar (visível apenas no mobile) */}
+          <div className="flex items-center justify-between mb-10 pl-2">
+            <div className="flex items-center gap-1.5">
+              <img src={logoImg} alt="TaskFlow Logo" className="w-12 h-12 object-contain" />
+              <span className="text-white font-bold text-xl tracking-wide">TaskFlow</span>
+            </div>
+            <button className="lg:hidden text-white" onClick={() => setIsOpen(false)}>
+              <HiX size={24} />
             </button>
-          ))}
-        </nav>
-      </div>
-
-      {/* Perfil do Usuário */}
-      <div
-          onClick={() => navigate ('/profile')}
-          className="flex items-center justify-between p-2 rounded-xl bg-[#141b2d] border border-[#1e293b]">
-        <div className="flex items-center gap-3">
-          <img 
-            src={fotoPerfil}
-            alt={user?.name} 
-            className="w-10 h-10 rounded-full object-cover ring-2 ring-[#6366f1]"
-          />
-          <div className="text-left">
-            <h4 className="text-sm font-semibold text-white leading-tight">{user?.name}</h4>
-            <span className="text-xs text-gray-400">{user?.role}</span>
           </div>
+
+          {/* Menu */}
+          <nav className="space-y-2">
+            {menuItems.map((item, index) => (
+              <button
+                key={index}
+                onClick={() => handleNavigation(item.path)}
+                className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 font-medium ${
+                  location.pathname === item.path 
+                    ? 'bg-gradient-to-r from-[#6366f1] to-[#a855f7] text-white shadow-lg shadow-[#6366f1]/20' 
+                    : 'hover:bg-[#1e293b] hover:text-white'
+                }`}
+              >
+                {item.icon}
+                <span>{item.name}</span>
+              </button>
+            ))}
+          </nav>
         </div>
-        <MdKeyboardArrowDown className="cursor-pointer hover:text-white" size={20} />
-      </div>
-    </aside>
+
+        {/* Perfil */}
+        <div
+            onClick={() => handleNavigation('/profile')}
+            className="flex items-center justify-between p-2 rounded-xl bg-[#141b2d] border border-[#1e293b] cursor-pointer">
+          <div className="flex items-center gap-3">
+            <img 
+              src={user?.avatarUrl || "https://via.placeholder.com/100"} 
+              alt={user?.name} 
+              className="w-10 h-10 rounded-full object-cover ring-2 ring-[#6366f1]"
+            />
+            <div className="text-left">
+              <h4 className="text-sm font-semibold text-white leading-tight">{user?.name}</h4>
+              <span className="text-xs text-gray-400">{user?.role}</span>
+            </div>
+          </div>
+          <MdKeyboardArrowDown className="cursor-pointer hover:text-white" size={20} />
+        </div>
+      </aside>
+    </>
   );
 }

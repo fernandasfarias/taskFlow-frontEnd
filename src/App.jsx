@@ -3,6 +3,9 @@ import { Routes, Route } from 'react-router-dom';
 
 import Autenticacao from './pages/Autenticacao/index';
 import DashBoardPage from './features/dashboard/DashBoardPage';
+import ListaConversasPage from './features/chat/ListaConversaPage';
+import ConversaPage from './features/chat/ConversaPage';
+
 
 import Certificacoes from "./pages/onboarding/certificacoes/Certificacoes";
 import Empresa from "./pages/onboarding/empresa/Empresa";
@@ -29,10 +32,13 @@ export default function App() {
 
       {/* dashboard: tela principal */}
       <Route path="/dashboard" element={<DashBoardPage />} />
+      
+      {/* mensagens */}
+      <Route path="/chat" element={<ListaConversasPage />} />
+      <Route path="/chat/:idProjeto" element={<ConversaPage />} />
 
       {/* tela de perfil */}
       <Route path="/profile" element={<Profile />}></Route>
-
     </Routes>
   );
 }
