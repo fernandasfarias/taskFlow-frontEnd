@@ -16,6 +16,11 @@ import Profile from "./pages/Perfil/Perfil";
 import RecuperarSenha from "./pages/recuperarSenha/RecuperarSenha";
 import RedefinirSenha from "./pages/redefinirSenha/RedefinirSenha";
 
+import CriarProjetos from "./pages/Projetos/CriarProjetos";
+import AssociarColaboradores from './pages/Projetos/AssociarColaboradores';
+import AssociarClientes from './pages/Projetos/AssociarClientes';
+import Projeto from './pages/Projetos/Projeto';
+
 export default function App() {
   return (
     <Routes>
@@ -39,6 +44,13 @@ export default function App() {
 
       {/* tela de perfil */}
       <Route path="/profile" element={<Profile />}></Route>
+
+      {/* PROJETO */}
+      <Route path="/projetos/novo" element={<CriarProjetos />}></Route>
+      <Route path="/projetos/associar-colaboradores" element={<AssociarColaboradores />}></Route>
+      <Route path="/projetos/associar-clientes" element={<AssociarClientes />}></Route>
+      <Route path="/projetos/projeto" element={<Projeto />}></Route>
+
     </Routes>
   );
 }
