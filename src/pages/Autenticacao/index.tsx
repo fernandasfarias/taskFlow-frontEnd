@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
+import { Link } from 'react-router-dom';
 
 import { useNavigate } from "react-router-dom";
 import { login } from "../../services/authService";
@@ -136,7 +137,7 @@ function FormularioLogin({ aoClicarCadastrar }: FormProps) {
   return (
     <>
       <img src={IMG_LOGO_ROXA} className="w-10 lg:w-12 mb-6 object-contain" alt="Logo" />
-      <h2 className="text-4xl lg:text-5xl font-bold mb-2 md:mb-3 text-white">Bem vindo de volta!</h2>
+      <h2 className="text-4xl lg:text-5xl font-bold mb-2 md:mb-3 text-white">Bem-vindo de volta!</h2>
       <p className="text-[#98928A] text-base md:text-lg lg:text-xl mb-8 md:mb-10 font-normal">Faça login para continuar.</p>
 
       <form onSubmit={handleSubmit(enviarFormulario)} className="w-full flex flex-col gap-4 text-white">
@@ -144,9 +145,11 @@ function FormularioLogin({ aoClicarCadastrar }: FormProps) {
         <Input placeholder="Sua senha" type="password" name="senha" register={register} errors={errors} />
         
         <div className="flex justify-end w-full">
-          <a href="#" className="text-sm text-[#98928A] hover:text-[#A78BFA] transition-colors mt-1">
+          <Link
+            to="/recuperar-senha" className="text-sm text-[#98928A] hover:text-[#A78BFA] transition-colors mt-1"
+          >
             Esqueci minha senha
-          </a>
+          </Link>
         </div>
 
         <button 

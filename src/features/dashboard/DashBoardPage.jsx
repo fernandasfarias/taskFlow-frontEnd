@@ -10,6 +10,7 @@ export default function DashBoardPage() {
 
   const [stats, setStats] = useState({ total: 0, emAndamento: 0, concluidos: 0, aFazer: 0 });
   const [projects, setProjects] = useState([]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
 
   const [user, setUser] = useState({ name: 'Carregando...', role: '', avatarUrl: '' });
@@ -63,7 +64,11 @@ export default function DashBoardPage() {
     <div className="flex min-h-screen w-full bg-[#090d16] font-sans overflow-hidden">
       
       {/* Sidebar na lateral esquerda */}
-      <Sidebar user={user} />
+      <Sidebar user={user}
+      isOpen={isSidebarOpen} 
+      setIsOpen={setIsSidebarOpen}
+       />
+      
       
      
       <div className="flex-1 flex flex-col p-10 gap-8 overflow-y-auto h-screen">
