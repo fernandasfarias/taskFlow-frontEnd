@@ -7,24 +7,109 @@ const IMG_LOGO_ROXA = "/Frame2.png";
 export default function Especialidades() {
   const navigate = useNavigate();
 
-  const [especialidades, setEspecialidades] = useState("");
+  const [mostrarDev, setMostrarDev] = useState(false);
+  const [mostrarDados, setMostrarDados] = useState(false);
+  const [mostrarDesign, setMostrarDesign] = useState(false);
+
+  const [especialidadesSelecionadas, setEspecialidadesSelecionadas] =
+    useState<string[]>([]);
+
+  
+
+  const desenvolvimento = [
+    "Desenvolvimento Front-End",
+    "Desenvolvimento Back-End",
+    "Desenvolvimento Full Stack",
+    "Desenvolvimento Mobile",
+    "Desenvolvimento Desktop",
+    "Desenvolvimento de APIs",
+    "Arquitetura de Software",
+    "DevOps",
+    "Cloud Computing",
+    "Banco de Dados",
+    "Qualidade de Software (QA/Testes)",
+    "Segurança da Informação",
+  ];
+
+  const dadosIA = [
+    "Ciência de Dados",
+    "Engenharia de Dados",
+    "Business Intelligence (BI)",
+    "Machine Learning",
+    "Inteligência Artificial",
+    "Análise de Dados",
+  ];
+
+  const design = [
+    "UX Design",
+    "UI Design",
+    "UX Research",
+    "Design de Produto",
+    "Design Gráfico",
+    "Motion Design",
+  ];
+
+  const alternarEspecialidade = (especialidade: string) => {
+    if (especialidadesSelecionadas.includes(especialidade)) {
+      setEspecialidadesSelecionadas(
+        especialidadesSelecionadas.filter(
+          (item) => item !== especialidade
+        )
+      );
+    } else {
+      setEspecialidadesSelecionadas([
+        ...especialidadesSelecionadas,
+        especialidade,
+      ]);
+    }
+  };
 
   const finalizarCadastro = () => {
-    if (!especialidades.trim()) {
-      toast.error("Descreva suas especialidades");
+    const possuiEspecialidade =
+      especialidadesSelecionadas.length > 0;
+     
+
+    if (!possuiEspecialidade) {
+      toast.error("Selecione ou informe uma especialidade");
       return;
     }
 
-   
+    console.log({
+      especialidadesSelecionadas,
+    
+    });
 
-    toast.success("Cadastro concluído!");
-
+    toast.success("Especialidades cadastradas!");
     navigate("/dashboard");
   };
 
+  const renderizarLista = (lista: string[]) => (
+    <div className="mt-4 mb-6 flex flex-col gap-3">
+      {lista.map((item) => (
+        <label
+          key={item}
+          className="flex items-center gap-3 text-white cursor-pointer"
+        >
+          <input
+            type="checkbox"
+            checked={especialidadesSelecionadas.includes(item)}
+            onChange={() => alternarEspecialidade(item)}
+            className="w-5 h-5  appearance-none
+    rounded-full
+    border-2
+    border-[#7C3AED]
+    checked:bg-[#7C3AED]
+    cursor-pointer"
+          />
+          <span>{item}</span>
+        </label>
+      ))}
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-[#0A0E17] flex items-center justify-center p-6">
-      <div className="w-full max-w-3xl bg-[#161B22] border border-[#30363D] rounded-[40px] p-8 md:p-12 text-white">
+      <div className="w-full max-w-4xl bg-[#161B22] border border-[#30363D] rounded-[40px] p-8 md:p-12 text-white">
 
         <img
           src={IMG_LOGO_ROXA}
@@ -37,31 +122,53 @@ export default function Especialidades() {
         </h1>
 
         <p className="text-[#98928A] text-lg mb-8">
-          Conte um pouco sobre sua área de atuação e suas especialidades.
+          Selecione uma ou mais especialidades.
         </p>
 
-        <div className="mb-8">
-          <textarea
-            value={especialidades}
-            onChange={(e) => setEspecialidades(e.target.value)}
-            placeholder="Ex: Desenvolvimento Front-End, React, UX/UI Design e Mobile."
-            rows={6}
-            className="
-              w-full
-              bg-transparent
-              text-white
-              placeholder-[#98928A]
-              border-[2px]
-              border-[#30363D]
-              focus:border-[#7C3AED]
-              focus:outline-none
-              rounded-3xl
-              px-6
-              py-4
-              resize-none
-            "
-          />
-        </div>
+        
+        <button
+          type="button"
+          onClick={() => setMostrarDev(!mostrarDev)}
+          className={`w-full text-left px-6 py-4 rounded-3xl border-2 transition mb-3 ${
+            mostrarDev
+              ? "border-[#7C3AED] text-[#7C3AED]"
+              : "border-[#30363D] text-white"
+          }`}
+        >
+          Desenvolvimento {mostrarDev ? "▾" : "▸"}
+        </button>
+
+        {mostrarDev && renderizarLista(desenvolvimento)}
+
+        
+        <button
+          type="button"
+          onClick={() => setMostrarDados(!mostrarDados)}
+          className={`w-full text-left px-6 py-4 rounded-3xl border-2 transition mb-3 ${
+            mostrarDados
+              ? "border-[#7C3AED] text-[#7C3AED]"
+              : "border-[#30363D] text-white"
+          }`}
+        >
+          Dados e IA {mostrarDados ? "▾" : "▸"}
+        </button>
+
+        {mostrarDados && renderizarLista(dadosIA)}
+
+        
+        <button
+          type="button"
+          onClick={() => setMostrarDesign(!mostrarDesign)}
+          className={`w-full text-left px-6 py-4 rounded-3xl border-2 transition mb-6 ${
+            mostrarDesign
+              ? "border-[#7C3AED] text-[#7C3AED]"
+              : "border-[#30363D] text-white"
+          }`}
+        >
+          Design {mostrarDesign ? "▾" : "▸"}
+        </button>
+
+        {mostrarDesign && renderizarLista(design)}
 
         <button
           onClick={finalizarCadastro}
