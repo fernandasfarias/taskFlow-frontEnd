@@ -59,7 +59,7 @@ export default function CriarProjetos() {
                 idClientes: [],
                 idColaboradores: [],
             });
-            navigate('/projetos/criar/associar', { state: { projeto } });
+            navigate('/projetos/associar-usuarios', { state: { projeto } });
         } catch (e) {
             console.error(e);
             setErro('Erro ao criar projeto. Tente novamente.');
@@ -74,13 +74,13 @@ export default function CriarProjetos() {
                 <div className="flex gap-16 items-center">
                     <div className="flex-1">
                         <button
-                            onClick={() => navigate('/projetos')}
+                            onClick={() => navigate('/dashboard')}
                             className="flex items-center gap-2 text-white font-semibold text-lg mb-8 hover:text-[#a5b4fc] transition-colors"
                         >
                             <HiArrowLeft size={20} />
-                            Novo Projeto
+                            Voltar
                         </button>
-
+                        <p className="flex items-center gap-2 text-white font-semibold text-lg mb-8">Novo Projeto</p>
                         <div className="space-y-4">
                             <input
                                 name="nome"
@@ -121,7 +121,7 @@ export default function CriarProjetos() {
 
                         <div className="flex gap-4 mt-8">
                             <button
-                                onClick={() => navigate('/projetos')}
+                                onClick={() => navigate('/dashboard')}
                                 className="flex-1 py-3 rounded-xl border border-[#1e2a4a] text-[#94a3b8] text-sm font-medium hover:bg-[#1e293b] hover:text-white transition-colors"
                             >
                                 Cancelar

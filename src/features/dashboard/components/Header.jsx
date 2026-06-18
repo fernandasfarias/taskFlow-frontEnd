@@ -38,9 +38,9 @@ export default function Header() {
         {
           perfil.tipo === "PROJECT_MANAGER"? (
             <button onClick={() => navigate("/projetos/novo")}
-            className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-gradient-to-r from-[#6366f1] to-[#a855f7] text-white px-5 py-2.5 rounded-xl font-medium text-sm shadow-lg shadow-[#6366f1]/20
-            transition-all duration-500 hover:-translate-y-1 hover:scale-105
-            hover:shadow-2xl hover:shadow-[#a855f7]/60 hover:from-[#7c3aed] hover:to-[#c084fc]">
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white
+                            bg-gradient-to-r from-[#6366f1] to-[#a855f7]
+                            hover:opacity-90 hover:shadow-lg hover:shadow-[#6366f1]/30 transition-all duration-200">
               <HiPlus size={18}></HiPlus>
               Novo Projeto</button>
           ) : (

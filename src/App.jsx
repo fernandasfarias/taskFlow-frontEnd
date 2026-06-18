@@ -45,6 +45,7 @@ export default function App() {
       <Route path="/profile" element={<Profile />}></Route>
 
       {/* PROJETO */}
+      <Route path="/projetos" element={<Projeto/>}></Route>
       <Route path="/projetos/novo" element={<CriarProjetos />}></Route>
       <Route path="/projetos/associar-usuarios" element={<AssociarUsuarios />}></Route>
       <Route path="/projetos/projeto" element={<Projeto />}></Route>

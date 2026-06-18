@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { HiSearch, HiPlus, HiCheck, HiOfficeBuilding } from 'react-icons/hi';
 import {
-    listarColaboradoresDoProjeto,
-    listarClientesDoProjeto,
     associarColaborador,
     desassociarColaborador,
     associarCliente,
     desassociarCliente,
+    listarTodosColaboradores,
+    listarTodosClientes,
+    buscarProjeto,
 } from '../../services/projetoService';
 
 const SEARCH_CLASS = 'w-full bg-[#0a0e1a] border border-[#1e2a4a] rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder-[#3d4a63] focus:outline-none focus:border-[#6366f1]/60 transition-colors';
@@ -85,19 +86,39 @@ export default function AssociarUsuarios() {
     const [loading, setLoading] = useState(true);
     const [erro, setErro] = useState('');
 
-    useEffect(() => {
-        if (!projeto?.id) { navigate('/projetos'); return; }
-        Promise.all([
-            listarColaboradoresDoProjeto(projeto.id),
-            listarClientesDoProjeto(projeto.id),
-        ])
-            .then(([colabs, cls]) => {
-                setColaboradores(colabs);
-                setClientes(cls);
-            })
-            .catch(e => { console.error(e); setErro('Erro ao carregar pessoas.'); })
-            .finally(() => setLoading(false));
-    }, []);
+useEffect(() => {
+    async function carregarDados() {
+        try {
+            const colabs = await listarTodosColaboradores();
+            const clientes = await listarTodosClientes();
+            const projetoCompleto = await buscarProjeto(projeto.id);
+
+            console.log("COLABS:", colabs);
+            console.log("CLIENTES:", clientes);
+            console.log("PROJETO:", projetoCompleto);
+
+            setColaboradores(colabs);
+            setClientes(clientes);
+
+            setMembrosAdicionados(
+                new Set(projetoCompleto.idColaboradores || [])
+            );
+
+            setClientesAdicionados(
+                new Set(projetoCompleto.idClientes || [])
+            );
+
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    if (projeto?.id) {
+        carregarDados();
+    }
+}, [projeto?.id]);
 
     const handleToggleColab = async (idColaborador) => {
         if (loadingColab.has(idColaborador)) return;
@@ -132,8 +153,12 @@ export default function AssociarUsuarios() {
                 setClientesAdicionados(prev => new Set([...prev, idCliente]));
             }
         } catch (e) {
-            console.error(e);
-            setErro('Erro ao atualizar associação. Tente novamente.');
+            console.error("=== ERRO COMPLETO ===", e);
+            console.log("STATUS:", e.response?.status);
+            console.log("DATA:", e.response?.data);
+            console.log("HEADERS:", e.response?.headers);
+            console.log("TOKEN:", localStorage.getItem("token"));
+            setErro('Erro ao carregar pessoas.');
         } finally {
             setLoadingCliente(prev => { const s = new Set(prev); s.delete(idCliente); return s; });
         }
@@ -154,8 +179,8 @@ export default function AssociarUsuarios() {
         <div className="min-h-screen bg-[#090d16] flex items-center justify-center p-6">
             <div className="w-full max-w-3xl border border-[#1e2a4a] rounded-2xl p-10">
                 <div className="mb-7">
-                    <h2 className="text-xl font-bold text-white">Associar pessoas</h2>
-                    <p className="text-sm text-[#64748b] mt-1">Busque e adicione membros da equipe e clientes</p>
+                    <h2 className="text-xl font-bold text-white">Associar Colaboradores e Clientes</h2>
+                    <p className="text-sm text-[#64748b] mt-1">Busque e adicione colaboradores e clientes</p>
                 </div>
 
                 {loading ? (
@@ -168,7 +193,7 @@ export default function AssociarUsuarios() {
                             <SearchInput
                                 value={buscaMembro}
                                 onChange={e => setBuscaMembro(e.target.value)}
-                                placeholder="Buscar membro..."
+                                placeholder="Buscar Colaborador..."
                             />
                             <div className="space-y-2 max-h-64 overflow-y-auto">
                                 {filtradosColabs.map(c => (
@@ -222,7 +247,7 @@ export default function AssociarUsuarios() {
 
                 <div className="flex gap-4 mt-8">
                     <button
-                        onClick={() => navigate('/projetos/criar')}
+                        onClick={() => navigate('/projetos/novo')}
                         className="flex-1 py-3 rounded-xl border border-[#1e2a4a] text-[#94a3b8] text-sm font-medium hover:bg-[#1e293b] hover:text-white transition-colors"
                     >
                         Voltar

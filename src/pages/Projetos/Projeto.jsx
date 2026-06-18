@@ -1,14 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Sidebar from '../dashboard/components/Sidebar';
-import StatCard from '../dashboard/components/StatCard';
+import Sidebar from '../../features/dashboard/components/Sidebar';
+import StatCard from '../../features/dashboard/components/StatCard';
 import CardProjeto from './CardProjeto';
 import { listarProjetos, buscarProjetos } from '../../services/projetoService';
-import { getPerfil } from '../../services/perfilService';
+import { getPerfil } from '../../services/perfilService';   
 import {
     HiOutlinePlus, HiOutlineSearch, HiOutlineFolder,
-    HiOutlineCollection, HiOutlineUsers, HiOutlineCalendar, HiOutlineExclamationCircle,
+    HiOutlineCollection, HiOutlineUsers, HiOutlineCalendar, HiOutlineExclamationCircle, HiPlus
 } from 'react-icons/hi';
+
+import { MdBlock } from 'react-icons/md';
 
 const HOJE = new Date().toISOString().split('T')[0];
 
@@ -21,6 +23,20 @@ export default function Projeto() {
     const [erro, setErro] = useState('');
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [user, setUser] = useState({ name: 'Carregando...', role: '' });
+    const [perfil, setPerfil] = useState({nome: "", email: "", senha: "", tipo: ""});
+
+    useEffect(()=>{
+        async function carregarPerfil(){
+            try {
+                const data = await getPerfil();
+                console.log(data);
+                setPerfil(data);
+            } catch (error) {
+                console.log("Erro ao carregar o perfil", error);
+            }
+        }
+        carregarPerfil();
+        }, []);
 
     useEffect(() => {
         async function carregar() {
@@ -106,15 +122,21 @@ export default function Projeto() {
                             {projetos.length} projeto{projetos.length !== 1 ? 's' : ''} cadastrado{projetos.length !== 1 ? 's' : ''}
                         </p>
                     </div>
-                    <button
-                        onClick={() => navigate('/projetos/criar')}
-                        className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white
+                    {
+                        perfil.tipo === "PROJECT_MANAGER"? (
+                            <button onClick={() => navigate("/projetos/novo")}
+                            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white
                             bg-gradient-to-r from-[#6366f1] to-[#a855f7]
-                            hover:opacity-90 hover:shadow-lg hover:shadow-[#6366f1]/30 transition-all duration-200"
-                    >
-                        <HiOutlinePlus size={18} />
-                        Novo Projeto
-                    </button>
+                            hover:opacity-90 hover:shadow-lg hover:shadow-[#6366f1]/30 transition-all duration-200">
+                            <HiPlus size={18}></HiPlus>
+                            Novo Projeto</button>
+                            ) : (
+                            <button disabled
+                            className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-slate-700 text-slate-400 px-5 py-2.5 rounded-xl font-medium text-sm cursor-not-allowed">
+                            <MdBlock size={18}></MdBlock>
+                            Novo Projeto</button>
+                            )
+                    }
                 </div>
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

@@ -35,3 +35,13 @@ export const associarCliente = (idProjeto, idCliente) =>
 
 export const desassociarCliente = (idProjeto, idCliente) =>
     api.delete(`/projetos/${idProjeto}/cliente/${idCliente}`).then(r => r.data);
+
+export async function listarTodosColaboradores() {
+    const response = await api.get("/colaboradores");
+    return response.data;
+}
+
+export async function listarTodosClientes(){
+    const response = await api.get("/clientes");
+    return response.data;
+}
