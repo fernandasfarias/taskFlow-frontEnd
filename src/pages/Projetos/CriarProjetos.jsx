@@ -59,7 +59,7 @@ export default function CriarProjetos() {
                 idClientes: [],
                 idColaboradores: [],
             });
-            navigate('/projetos/associar-usuarios', { state: { projeto } });
+            navigate('/projetos/associar-colaboradores', { state: { projeto } });
         } catch (e) {
             console.error(e);
             setErro('Erro ao criar projeto. Tente novamente.');

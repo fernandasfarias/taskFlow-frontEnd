@@ -45,3 +45,8 @@ export async function listarTodosClientes(){
     const response = await api.get("/clientes");
     return response.data;
 }
+
+export const buscarUsuarioPorEMail = (email) =>
+    api.get("projetos/usuarios/email", {
+        params: { email }
+    }).then(r => r.data);
