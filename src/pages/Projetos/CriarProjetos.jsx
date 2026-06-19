@@ -45,6 +45,17 @@ export default function CriarProjetos() {
         setErro('');
     };
 
+    const handleOrcamentoChange = (e) => {
+        const digitos = e.target.value.replace(/\D/g, '');
+        const centavos = parseInt(digitos || '0', 10);
+        const valor = centavos / 100;
+        const display = centavos === 0 ? '' : new Intl.NumberFormat('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+        }).format(valor);
+        setForm(prev => ({ ...prev, orcamento: valor, orcamentoDisplay: display }));
+    };
+
     const handleProximo = async () => {
         if (!form.nome.trim()) { setErro('Informe o nome do projeto.'); return; }
         setLoading(true);
@@ -54,7 +65,7 @@ export default function CriarProjetos() {
                 descricao: form.objetivo,
                 dataInicio: form.dataInicio || null,
                 dataEntrega: form.dataEntrega || null,
-                orcamento: parseFloat(form.orcamento) || 0,
+                orcamento: form.orcamento || 0,
                 idManager,
                 idClientes: [],
                 idColaboradores: [],
@@ -102,13 +113,11 @@ export default function CriarProjetos() {
                                 <DateInput name="dataEntrega" value={form.dataEntrega} onChange={handleChange} placeholder="Data de entrega" />
                             </div>
                             <input
-                                name="orcamento"
-                                value={form.orcamento}
-                                onChange={handleChange}
-                                placeholder="Orçamento"
-                                type="number"
-                                min="0"
-                                step="0.01"
+                                type="text"
+                                inputMode="numeric"
+                                value={form.orcamentoDisplay || ''}
+                                onChange={handleOrcamentoChange}
+                                placeholder="R$ 0,00"
                                 className={INPUT_CLASS}
                             />
                         </div>

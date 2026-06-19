@@ -18,8 +18,8 @@ import RedefinirSenha from "./pages/redefinirSenha/RedefinirSenha";
 
 import CriarProjetos from "./pages/Projetos/CriarProjetos";
 import Projeto from './pages/Projetos/Projeto';
-
-import AssociarColaboradores from './pages/Projetos/AssociarColaboradores';
+import AssociarUsuarios from './pages/Projetos/AssociarUsuarios';
+import ExibirProjeto from './pages/Projetos/ExibirProjeto';
 export default function App() {
   return (
     <Routes>
@@ -47,9 +47,8 @@ export default function App() {
       {/* PROJETO */}
       <Route path="/projetos" element={<Projeto/>}></Route>
       <Route path="/projetos/novo" element={<CriarProjetos />}></Route>
-      <Route path="projetos/associar-colaboradres" element={<AssociarColaboradores/>}></Route>
-      <Route path="/projetos/associar-clientes" element={<AssociarClientes />}></Route>
-      <Route path="/projetos/projeto" element={<Projeto />}></Route>
+      <Route path="/projetos/associar-colaboradores" element={<AssociarUsuarios />}></Route>
+      <Route path="/projetos/:id" element={<ExibirProjeto />}></Route>
 
     </Routes>
   );

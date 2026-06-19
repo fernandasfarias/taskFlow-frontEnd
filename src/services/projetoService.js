@@ -37,12 +37,12 @@ export const desassociarCliente = (idProjeto, idCliente) =>
     api.delete(`/projetos/${idProjeto}/cliente/${idCliente}`).then(r => r.data);
 
 export async function listarTodosColaboradores() {
-    const response = await api.get("/colaboradores");
+    const response = await api.get("/projetos/colaboradores");
     return response.data;
 }
 
 export async function listarTodosClientes(){
-    const response = await api.get("/clientes");
+    const response = await api.get("/projetos/clientes");
     return response.data;
 }
 

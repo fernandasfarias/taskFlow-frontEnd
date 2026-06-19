@@ -74,6 +74,7 @@ export default function AssociarUsuarios() {
     const navigate = useNavigate();
     const { state } = useLocation();
     const projeto = state?.projeto;
+    const from = state?.from || '/projetos/novo';
 
     const [colaboradores, setColaboradores] = useState([]);
     const [clientes, setClientes] = useState([]);
@@ -247,7 +248,7 @@ useEffect(() => {
 
                 <div className="flex gap-4 mt-8">
                     <button
-                        onClick={() => navigate('/projetos/novo')}
+                        onClick={() => navigate(from)}
                         className="flex-1 py-3 rounded-xl border border-[#1e2a4a] text-[#94a3b8] text-sm font-medium hover:bg-[#1e293b] hover:text-white transition-colors"
                     >
                         Voltar
