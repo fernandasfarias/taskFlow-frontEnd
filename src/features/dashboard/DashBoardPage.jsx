@@ -14,30 +14,27 @@ export default function DashBoardPage() {
   
   const [user, setUser] = useState({ nome: 'Carregando...', tipo: '', avatarUrl: '' });
   const [loading, setLoading] = useState(true);
+  
+  async function loadDashboardData() {
+    try {
+      setLoading(true);
+
+      const [backendUser, backendProjects] = await Promise.all([
+        getPerfil(),
+        listarProjetos()
+      ]);
+
+      setUser(backendUser);
+      setProjects(backendProjects);
+
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
-    async function loadDashboardData() {
-      try {
-        setLoading(true);
-    
-        
-        
-        const backendUser = await getPerfil().catch(() => ({ nome: 'Usuário', tipo: '' }));
-        const backendStats = await DashboardService.getStats().catch(() => stats);
-        const backendProjects = await DashboardService.getProjects().catch(() => []);
-
-        
-        setUser(backendUser);
-        setStats(backendStats);
-        setProjects(backendProjects);
-    
-      } catch (error) {
-        console.error("ERRO AO CONECTAR COM O BACKEND.");
-      } finally {
-        setLoading(false);
-      }
-    }
-
     loadDashboardData();
   }, []);
 

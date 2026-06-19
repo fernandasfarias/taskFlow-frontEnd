@@ -1,5 +1,6 @@
 import React from 'react';
 import ProjectCard from './ProjectCard';
+import CardProjeto from '../../../pages/Projetos/CardProjeto';
 
 export default function ProjectsSection({ projects }) {
   return (
@@ -14,8 +15,8 @@ export default function ProjectsSection({ projects }) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {projects.map((project) => (
-          <ProjectCard key={project.id} project={project} />
+        {projects.map((projeto) => (
+          <CardProjeto key={projeto.id} project={projeto} />
         ))}
       </div>
     </div>
