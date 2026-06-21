@@ -1,5 +1,7 @@
 import { FormEvent, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
+
 import { redefinirSenha } from "../../services/authService";
 
 export default function RedefinirSenha() {
@@ -10,13 +12,13 @@ export default function RedefinirSenha() {
 
   const [novaSenha, setNovaSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
+  const [mostrarNovaSenha, setMostrarNovaSenha] = useState(false);
+  const [mostrarConfirmarSenha, setMostrarConfirmarSenha] = useState(false);
   const [erro, setErro] = useState("");
   const [sucesso, setSucesso] = useState("");
   const [carregando, setCarregando] = useState(false);
 
-  async function handleSubmit(
-    e: FormEvent<HTMLFormElement>
-  ): Promise<void> {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>): Promise<void> {
     e.preventDefault();
 
     setErro("");
@@ -73,51 +75,63 @@ export default function RedefinirSenha() {
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
+            <div className="relative">
               <input
-                type="password"
+                type={mostrarNovaSenha ? "text" : "password"}
                 value={novaSenha}
                 onChange={(e) => {
                   setNovaSenha(e.target.value);
                   setErro("");
                 }}
                 placeholder="Nova senha"
-                className={`w-full h-12 rounded-lg bg-transparent border px-4 text-white placeholder:text-[#7C8498] outline-none transition-colors ${
+                className={`w-full h-12 rounded-lg bg-transparent border px-4 pr-12 text-white placeholder:text-[#7C8498] outline-none transition-colors ${
                   erro
                     ? "border-red-500 focus:border-red-500"
                     : "border-[#2D3854] focus:border-[#7C3AED]"
                 }`}
               />
+
+              <button
+                type="button"
+                onClick={() => setMostrarNovaSenha(!mostrarNovaSenha)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#7C8498] hover:text-white transition-colors"
+              >
+                {mostrarNovaSenha ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
             </div>
 
-            <div>
+            <div className="relative">
               <input
-                type="password"
+                type={mostrarConfirmarSenha ? "text" : "password"}
                 value={confirmarSenha}
                 onChange={(e) => {
                   setConfirmarSenha(e.target.value);
                   setErro("");
                 }}
                 placeholder="Confirmar nova senha"
-                className={`w-full h-12 rounded-lg bg-transparent border px-4 text-white placeholder:text-[#7C8498] outline-none transition-colors ${
+                className={`w-full h-12 rounded-lg bg-transparent border px-4 pr-12 text-white placeholder:text-[#7C8498] outline-none transition-colors ${
                   erro
                     ? "border-red-500 focus:border-red-500"
                     : "border-[#2D3854] focus:border-[#7C3AED]"
                 }`}
               />
+
+              <button
+                type="button"
+                onClick={() => setMostrarConfirmarSenha(!mostrarConfirmarSenha)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#7C8498] hover:text-white transition-colors"
+              >
+                {mostrarConfirmarSenha ? (
+                  <EyeOff size={20} />
+                ) : (
+                  <Eye size={20} />
+                )}
+              </button>
             </div>
 
-            {erro && (
-              <p className="text-red-400 text-sm">
-                {erro}
-              </p>
-            )}
+            {erro && <p className="text-red-400 text-sm">{erro}</p>}
 
-            {sucesso && (
-              <p className="text-green-400 text-sm">
-                {sucesso}
-              </p>
-            )}
+            {sucesso && <p className="text-green-400 text-sm">{sucesso}</p>}
 
             <button
               type="submit"
