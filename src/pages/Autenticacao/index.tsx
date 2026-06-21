@@ -9,8 +9,8 @@ import { login } from "../../services/authService";
 import { cadastroService } from "../../services/cadastroService";
 
 const IMG_FUNDO = "/gradiente.png";
-const IMG_LOGO_COMPLETA = "/Frame1.svg";
-const IMG_LOGO_ROXA = "/Frame2.png";
+const IMG_LOGO_COMPLETA = "/Frame1.svg"; 
+const IMG_LOGO_ROXA = "/Frame2.png"; 
 const IMG_LOGO_BRANCA = "/Frame3.svg";
 
 export default function Autenticacao() {
@@ -29,8 +29,7 @@ export default function Autenticacao() {
         <div className="text-white">
           <p className="text-[40px] font-normal mb-6">Eai!</p>
           <h1 className="text-3xl font-normal leading-snug mb-10">
-            Bem-vindo ao <strong className="font-bold">TaskFlow</strong> seu
-            espaço de gestão.
+            Bem-vindo ao <strong className="font-bold">TaskFlow</strong> seu espaço de gestão.
           </h1>
           <button onClick={() => { setEhCadastro(false); setIntroMobile(false); }} className="w-full bg-[#161B22] hover:bg-[#1f2630] text-white text-xl font-bold py-4 rounded-2xl transition duration-300 shadow-md">
             Já faço parte
@@ -48,44 +47,18 @@ export default function Autenticacao() {
         <motion.div className="hidden md:flex absolute inset-y-4 md:inset-y-5 left-4 md:left-5 w-[calc(50%-16px)] md:w-[calc(50%-20px)] bg-cover bg-center rounded-[44px] lg:rounded-[52px] z-10 flex-col p-8 lg:p-12 overflow-hidden" style={{ backgroundImage: `url('${IMG_FUNDO}')` }} animate={{ x: ehCadastro ? "100%" : "0%" }} transition={molaSuave}>
           <AnimatePresence mode="wait">
             {ehCadastro ? (
-              <motion.div
-                key="textoCadastro"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="text-white flex flex-col justify-center h-full"
-              >
+              <motion.div key="textoCadastro" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="text-white flex flex-col justify-center h-full">
                 <h1 className="text-4xl lg:text-5xl font-normal leading-tight max-w-[450px]">
-                  Gerencie <strong className="font-bold">projetos</strong>.
-                  <br />
-                  Alcance <strong className="font-bold">Resultados</strong>.
+                  Gerencie <strong className="font-bold">projetos</strong>.<br/>Alcance <strong className="font-bold">Resultados</strong>.
                 </h1>
               </motion.div>
             ) : (
-              <motion.div
-                key="textoLogin"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="text-white flex flex-col items-center justify-center h-full w-full"
-              >
-                <img
-                  src={IMG_LOGO_COMPLETA}
-                  className="w-[300px] lg:w-[400px] mb-4"
-                  alt="TaskFlow"
-                />
+              <motion.div key="textoLogin" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="text-white flex flex-col items-center justify-center h-full w-full">
+                <img src={IMG_LOGO_COMPLETA} className="w-[300px] lg:w-[400px] mb-4" alt="TaskFlow" />
               </motion.div>
             )}
           </AnimatePresence>
-          <motion.img
-            src={IMG_LOGO_BRANCA}
-            className="absolute bottom-8 left-8 lg:bottom-12 lg:left-12 w-16 lg:w-20 h-auto object-contain z-10"
-            alt="Ícone"
-            animate={{ x: ehCadastro ? "-10%" : "0%" }}
-            transition={molaSuave}
-          />
+          <motion.img src={IMG_LOGO_BRANCA} className="absolute bottom-8 left-8 lg:bottom-12 lg:left-12 w-16 lg:w-20 h-auto object-contain z-10" alt="Ícone" animate={{ x: ehCadastro ? "-10%" : "0%" }} transition={molaSuave} />
         </motion.div>
 
         <div className="flex-1 flex w-full h-full">
@@ -108,7 +81,7 @@ function FormularioLogin({ aoClicarCadastrar }: FormProps) {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const navigate = useNavigate();
 
-  const enviarFormulario = async (dados: any) => {
+  const enviarFormulario = async (dados:any) => {
     try {
       const response = await login(dados.email, dados.senha);
       localStorage.setItem('token', response.token);
@@ -121,36 +94,9 @@ function FormularioLogin({ aoClicarCadastrar }: FormProps) {
 
   return (
     <>
-      <img
-        src={IMG_LOGO_ROXA}
-        className="w-10 lg:w-12 mb-6 object-contain"
-        alt="Logo"
-      />
-      <h2 className="text-4xl lg:text-5xl font-bold mb-2 md:mb-3 text-white">
-        Bem-vindo de volta!
-      </h2>
-      <p className="text-[#98928A] text-base md:text-lg lg:text-xl mb-8 md:mb-10 font-normal">
-        Faça login para continuar.
-      </p>
-
-      <form
-        onSubmit={handleSubmit(enviarFormulario)}
-        className="w-full flex flex-col gap-4 text-white"
-      >
-        <Input
-          placeholder="Seu email"
-          type="email"
-          name="email"
-          register={register}
-          errors={errors}
-        />
-        <Input
-          placeholder="Sua senha"
-          type="password"
-          name="senha"
-          register={register}
-          errors={errors}
-        />
+      <img src={IMG_LOGO_ROXA} className="w-10 lg:w-12 mb-6 object-contain" alt="Logo" />
+      <h2 className="text-4xl lg:text-5xl font-bold mb-2 md:mb-3 text-white">Bem-vindo de volta!</h2>
+      <p className="text-[#98928A] text-base md:text-lg lg:text-xl mb-8 md:mb-10 font-normal">Faça login para continuar.</p>
 
       <form onSubmit={handleSubmit(enviarFormulario)} className="w-full flex flex-col gap-4 text-white">
         <Input placeholder="Seu email" type="email" name="email" register={register} errors={errors} />
@@ -172,12 +118,7 @@ function FormularioLogin({ aoClicarCadastrar }: FormProps) {
 }
 
 function FormularioCadastro({ aoClicarLogin }: FormProps) {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    watch,
-  } = useForm();
+  const { register, handleSubmit, formState: { errors }, watch } = useForm();
   const senhaDigitada = watch("senha");
   const navigate = useNavigate();
 
@@ -213,13 +154,7 @@ function FormularioCadastro({ aoClicarLogin }: FormProps) {
         
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1">
-            <Input
-              placeholder="Sua senha"
-              type="password"
-              name="senha"
-              register={register}
-              errors={errors}
-            />
+            <Input placeholder="Sua senha" type="password" name="senha" register={register} errors={errors} />
           </div>
           <div className="flex-1">
             <Input placeholder="Confirma sua senha" type="password" name="confirmarSenha" register={register} errors={errors} regras={{ required: "Obrigatório!", validate: (valor: string) => valor === senhaDigitada || "As senhas não batem!" }} />
@@ -235,20 +170,8 @@ function FormularioCadastro({ aoClicarLogin }: FormProps) {
               <option value="PROJECT_MANAGER" className="bg-[#161B22] text-white">Project Manager</option>
             </select>
             <div className="absolute inset-y-0 right-6 flex items-center pointer-events-none">
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M6 9L12 15L18 9"
-                  stroke="#98928A"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6 9L12 15L18 9" stroke="#98928A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
           </div>
@@ -291,7 +214,11 @@ function Input({ placeholder, type, name, register, errors, regras }: any) {
             onClick={() => setMostrarSenha(!mostrarSenha)}
             className="absolute right-5 top-1/2 -translate-y-1/2 text-[#98928A] hover:text-white transition-colors"
           >
-            {mostrarSenha ? <EyeOff size={20} /> : <Eye size={20} />}
+            {mostrarSenha ? (
+              <EyeOff size={20} />
+            ) : (
+              <Eye size={20} />
+            )}
           </button>
         )}
       </div>
