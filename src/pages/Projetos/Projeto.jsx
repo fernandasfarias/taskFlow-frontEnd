@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../../features/dashboard/components/Sidebar';
 import StatCard from '../../features/dashboard/components/StatCard';
@@ -6,7 +6,7 @@ import CardProjeto from './CardProjeto';
 import { listarProjetos, buscarProjetos } from '../../services/projetoService';
 import { getPerfil } from '../../services/perfilService';   
 import {
-    HiOutlinePlus, HiOutlineSearch, HiOutlineFolder,
+    HiOutlineSearch, HiOutlineFolder,
     HiOutlineCollection, HiOutlineUsers, HiOutlineCalendar, HiOutlineExclamationCircle, HiPlus
 } from 'react-icons/hi';
 
