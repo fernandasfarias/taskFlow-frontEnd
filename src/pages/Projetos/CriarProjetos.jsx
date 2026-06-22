@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { HiArrowLeft } from 'react-icons/hi';
-import { criarProjeto } from '../../services/projetoService';
 import { getPerfil } from '../../services/perfilService';
 import logoImg from '../../assets/Frame2.png';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import { criarProjeto, atualizarProjeto, buscarProjeto } from '../../services/projetoService';
 
 const INPUT_CLASS = 'w-full bg-[#0a0e1a] border border-[#1e2a4a] rounded-xl px-4 py-3 text-sm text-white placeholder-[#3d4a63] focus:outline-none focus:border-[#6366f1]/60 transition-colors';
 
@@ -29,6 +29,38 @@ export default function CriarProjetos() {
     const [loading, setLoading] = useState(false);
     const [erro, setErro] = useState('');
     const [idManager, setIdManager] = useState(null);
+    const { id } = useParams();
+    const location = useLocation();
+    const modoEdicao = Boolean(id);
+
+    useEffect(() => {
+        async function carregarProjetoParaEdicao() {
+            if (!modoEdicao) return;
+
+            try {
+                const projeto = location.state?.projeto || await buscarProjeto(id);
+
+                setForm({
+                    nome: projeto.nome || '',
+                    objetivo: projeto.descricao || projeto.objetivo || '',
+                    dataInicio: projeto.dataInicio || '',
+                    dataEntrega: projeto.dataEntrega || '',
+                    orcamento: projeto.orcamento || '',
+                    orcamentoDisplay: projeto.orcamento
+                        ? new Intl.NumberFormat('pt-BR', {
+                            style: 'currency',
+                            currency: 'BRL',
+                        }).format(projeto.orcamento)
+                        : ''
+                });
+            } catch (error) {
+                console.error(error);
+                setErro("Erro ao carregar projeto para edição.");
+            }
+        }
+
+        carregarProjetoParaEdicao();
+    }, [id]);
 
     useEffect(() => {
         getPerfil()
@@ -57,27 +89,40 @@ export default function CriarProjetos() {
     };
 
     const handleProximo = async () => {
-        if (!form.nome.trim()) { setErro('Informe o nome do projeto.'); return; }
-        setLoading(true);
-        try {
-            const projeto = await criarProjeto({
-                nome: form.nome,
-                descricao: form.objetivo,
-                dataInicio: form.dataInicio || null,
-                dataEntrega: form.dataEntrega || null,
-                orcamento: form.orcamento || 0,
-                idManager,
-                idClientes: [],
-                idColaboradores: [],
-            });
-            navigate('/projetos/associar-colaboradores', { state: { projeto } });
-        } catch (e) {
-            console.error(e);
-            setErro('Erro ao criar projeto. Tente novamente.');
-        } finally {
-            setLoading(false);
+        if (!form.nome.trim()) {
+            setErro('Informe o nome do projeto.');
+            return;
         }
-    };
+
+        setLoading(true);
+            try {
+                const dadosProjeto = {
+                    nome: form.nome,
+                    descricao: form.objetivo,
+                    dataInicio: form.dataInicio || null,
+                    dataEntrega: form.dataEntrega || null,
+                    orcamento: form.orcamento || 0,
+                    idManager,
+                    idClientes: [],
+                    idColaboradores: [],
+                };
+
+                if (modoEdicao) {
+                    await atualizarProjeto(id, dadosProjeto);
+                    navigate('/projetos');
+                    return;
+                }
+
+                const projeto = await criarProjeto(dadosProjeto);
+                navigate('/projetos/associar-colaboradores', { state: { projeto } });
+
+            } catch (e) {
+                console.error(e);
+                setErro(modoEdicao ? 'Erro ao atualizar projeto.' : 'Erro ao criar projeto.');
+            } finally {
+                setLoading(false);
+            }
+        };
 
     return (
         <div className="min-h-screen bg-[#090d16] flex items-center justify-center p-6">
@@ -142,7 +187,7 @@ export default function CriarProjetos() {
                             >
                                 {loading
                                     ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                    : 'Próximo'
+                                    : modoEdicao ? 'Salvar alterações' : 'Próximo'
                                 }
                             </button>
                         </div>

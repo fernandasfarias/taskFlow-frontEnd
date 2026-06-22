@@ -49,6 +49,7 @@ export default function App() {
       <Route path="/projetos/novo" element={<CriarProjetos />}></Route>
       <Route path="/projetos/associar-colaboradores" element={<AssociarUsuarios />}></Route>
       <Route path="/projetos/:id" element={<ExibirProjeto />}></Route>
+      <Route path="/projetos/editar/:id" element={<CriarProjetos />} />
 
     </Routes>
   );
