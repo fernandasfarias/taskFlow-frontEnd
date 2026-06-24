@@ -6,7 +6,6 @@ import DashBoardPage from './features/dashboard/DashBoardPage';
 import ListaConversasPage from './features/chat/ListaConversaPage';
 import ConversaPage from './features/chat/ConversaPage';
 
-
 import Certificacoes from "./pages/onboarding/certificacoes/Certificacoes";
 import Empresa from "./pages/onboarding/empresa/Empresa";
 import Especialidades from "./pages/onboarding/especialidades/Especialidades";
@@ -20,6 +19,13 @@ import CriarProjetos from "./pages/Projetos/CriarProjetos";
 import Projeto from './pages/Projetos/Projeto';
 import AssociarUsuarios from './pages/Projetos/AssociarUsuarios';
 import ExibirProjeto from './pages/Projetos/ExibirProjeto';
+
+// Importações das novas telas de ações rápidas
+{/*import KanbanProjeto from './pages/Projetos/KanbanProjeto';*/}
+{/*import CronogramaProjeto from './pages/Projetos/CronogramaProjeto';*/}
+import ChatProjeto from './features/chat/ConversaPage';
+{/*import NovaAtividade from './pages/Projetos/NovaAtividade';*/}
+
 export default function App() {
   return (
     <Routes>
@@ -49,6 +55,15 @@ export default function App() {
       <Route path="/projetos/novo" element={<CriarProjetos />}></Route>
       <Route path="/projetos/associar-colaboradores" element={<AssociarUsuarios />}></Route>
       <Route path="/projetos/:id" element={<ExibirProjeto />}></Route>
+      
+      {/* Novas rotas do projeto */}
+      {/* Comentadas até que os arquivos sejam criados */}
+      {/* <Route path="/projetos/:id/kanban" element={<KanbanProjeto />} /> */}
+      {/* <Route path="/projetos/:id/cronograma" element={<CronogramaProjeto />} /> */}
+      
+      <Route path="/projetos/:id/chat" element={<ChatProjeto />} />
+      
+      {/* <Route path="/projetos/:id/nova-atividade" element={<NovaAtividade />} /> */}
 
     </Routes>
   );
