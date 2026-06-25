@@ -4,6 +4,7 @@ import {
     HiArrowLeft, HiOutlineCalendar, HiOutlineCurrencyDollar,
     HiOutlineOfficeBuilding, HiOutlineBriefcase,
     HiOutlineClipboardList, HiOutlineUsers, HiX,
+    HiOutlineViewBoards, HiOutlineChat, HiOutlinePlus
 } from 'react-icons/hi';
 import Sidebar from '../../features/dashboard/components/Sidebar';
 import {
@@ -248,6 +249,38 @@ export default function ExibirProjeto() {
                             value={`${colaboradores.length + clientes.length} pessoa${colaboradores.length + clientes.length !== 1 ? 's' : ''}`}
                             colorClass="bg-blue-500/20 text-blue-400"
                         />
+                    </div>
+
+                    {/* Botões de Ações Rápidas */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <button
+                            onClick={() => navigate(`/projetos/${id}/kanban`)}
+                            className="flex items-center justify-center gap-2 px-4 py-3 bg-[#141b2d] border border-[#1e293b] rounded-xl text-sm font-semibold text-white hover:bg-[#1e293b] hover:border-[#6366f1]/50 transition-all shadow-sm"
+                        >
+                            <HiOutlineViewBoards size={18} className="text-[#6366f1]" />
+                            Kanban
+                        </button>
+                        <button
+                            onClick={() => navigate(`/projetos/${id}/cronograma`)}
+                            className="flex items-center justify-center gap-2 px-4 py-3 bg-[#141b2d] border border-[#1e293b] rounded-xl text-sm font-semibold text-white hover:bg-[#1e293b] hover:border-[#10b981]/50 transition-all shadow-sm"
+                        >
+                            <HiOutlineCalendar size={18} className="text-[#10b981]" />
+                            Cronograma
+                        </button>
+                        <button
+                            onClick={() => navigate(`/projetos/${id}/chat`)}
+                            className="flex items-center justify-center gap-2 px-4 py-3 bg-[#141b2d] border border-[#1e293b] rounded-xl text-sm font-semibold text-white hover:bg-[#1e293b] hover:border-[#3b82f6]/50 transition-all shadow-sm"
+                        >
+                            <HiOutlineChat size={18} className="text-[#3b82f6]" />
+                            Chat
+                        </button>
+                        <button
+                            onClick={() => navigate(`/projetos/${id}/nova-atividade`)}
+                            className="flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-[#6366f1] to-[#a855f7] rounded-xl text-sm font-bold text-white hover:opacity-90 transition-all shadow-md shadow-[#6366f1]/20"
+                        >
+                            <HiOutlinePlus size={18} />
+                            Add Atividade
+                        </button>
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
