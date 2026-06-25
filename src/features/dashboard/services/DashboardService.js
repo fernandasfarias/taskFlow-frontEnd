@@ -1,44 +1,38 @@
-import axios from "axios"; 
+import axios from "axios";
 
 const API = axios.create({
-    baseURL:'https://localhost:8080/api/dashboard',
-    headers:{
-        'Content-Type':'application/json'
-    }
+  baseURL: "http://localhost:8080/api/dashboard",
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
+API.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  return config;
+});
 
 export const DashboardService = {
-    // buscar os dados do dashboard 
-getStats : async() => { 
-    try{
-        const response = await API.get('/stats');
-        return response.data;
-    } catch(error){
-        console.error('Erro ao buscar dados do dashboard:', error);
-        throw error;
-    }
-},
+  getStats: async () => {
+    const response = await API.get("/stats");
+    return response.data;
+  },
 
-getProjects: async() =>{
-    try{
-        const response = await API.get('/projects');
-        return response.data;
-    }catch(error){
-        console.error('Erro ao buscar projetos:', error);
-        throw error;
-    }
-    
-},
+  getUserProfile: async () => {
+    const response = await API.get("/user");
+    return response.data;
+  },
 
-getUserProfile: async () => {
-  try {
-    const response = await API.get('/user');
-    return response.data; // objeto: { name: 'Alice Silva', role: 'Project Manager', avatarUrl: '...' }
-  } catch (error) {
-    console.error("Erro ao buscar perfil do usuário:", error);
-    throw error;
-  }
-}
+  searchProjects: async (termo) => {
+    const response = await API.get("/projects", {
+      params: { search: termo },
+    });
 
-}
+    return response.data;
+  },
+};

@@ -10,13 +10,18 @@ import { listarProjetos, buscarProjetos } from "../../services/projetoService";
 import {
   HiOutlineSearch,
   HiOutlineFolder,
-  HiOutlineExclamationCircle
+  HiOutlineExclamationCircle,
 } from "react-icons/hi";
 
 export default function DashBoardPage() {
   const navigate = useNavigate();
 
-  const [stats, setStats] = useState({ total: 0, emAndamento: 0, concluidos: 0, aFazer: 0 });
+  const [stats, setStats] = useState({
+    total: 0,
+    emAndamento: 0,
+    concluidos: 0,
+    aFazer: 0,
+  });
 
   const [projects, setProjects] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -41,55 +46,26 @@ export default function DashBoardPage() {
   }
 
   useEffect(() => {
-  async function loadDashboardData() {
-    try {
-      setLoading(true);
-
-      const [backendStats, backendUser, backendProjects] = await Promise.all([
-        DashboardService.getStats(),
-        DashboardService.getUserProfile(),
-        DashboardService.getProjects()
-      ]);
-
-      setStats(backendStats);
-      setUser(backendUser);
-      setProjects(backendProjects);
-    } catch (error) {
-      console.error("ERRO AO CARREGAR DASHBOARD:", error);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  loadDashboardData();
-}, []);
-
-  useEffect(() => {
     async function loadDashboardData() {
       try {
         setLoading(true);
 
-        try {
-          const backendStats = await DashboardService.getStats();
-          setStats(backendStats);
-        } catch (error) {
-          console.error("Erro ao carregar stats:", error);
-        }
+        const [backendStats, backendUser] = await Promise.all([
+          DashboardService.getStats(),
+          DashboardService.getUserProfile()
+        ]);
 
-        try {
-          const backendUser = await DashboardService.getUserProfile();
-          setUser(backendUser);
-        } catch (error) {
-          console.error("Erro ao carregar perfil:", error);
-        }
+        setStats({
+          total: backendStats.total ?? 0,
+          emAndamento: backendStats.emAndamento ?? 0,
+          concluidos: backendStats.concluidos ?? 0,
+          aFazer: backendStats.aFazer ?? 0,
+        });
 
-        try {
-          const lista = await listarProjetos();
-          setProjects(Array.isArray(lista) ? lista : []);
-        } catch (error) {
-          console.error("Erro ao carregar projetos:", error);
-          setErro("Não foi possível carregar os projetos.");
-        }
+        setUser(backendUser);
+      } catch (error) {
+        console.error("Erro ao carregar dashboard:", error);
+        setErro("Não foi possível carregar os dados do dashboard.");
       } finally {
         setLoading(false);
       }
@@ -98,28 +74,28 @@ export default function DashBoardPage() {
     loadDashboardData();
   }, []);
 
-  useEffect(() => {
-    if (loading) return;
+ useEffect(() => {
+  if (loading) return;
 
-    const timer = setTimeout(async () => {
-      try {
-        setBuscando(true);
+  const timer = setTimeout(async () => {
+    try {
+      setBuscando(true);
 
-        const resposta = busca.trim()
-          ? await buscarProjetos(busca)
-          : await listarProjetos();
+      const resposta = busca.trim()
+        ? await DashboardService.searchProjects(busca)
+        : await listarProjetos();
 
-        setProjects(normalizarProjetos(resposta));
-      } catch (error) {
-        console.error(error);
-        setErro("Não foi possível carregar os projetos.");
-      } finally {
-        setBuscando(false);
-      }
-    }, 400);
+      setProjects(normalizarProjetos(resposta));
+    } catch (error) {
+      console.error(error);
+      setErro("Não foi possível carregar os projetos.");
+    } finally {
+      setBuscando(false);
+    }
+  }, 400);
 
-    return () => clearTimeout(timer);
-  }, [busca, loading]);
+  return () => clearTimeout(timer);
+}, [busca, loading]);
 
   if (loading) {
     return (
@@ -198,7 +174,7 @@ export default function DashBoardPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {projects.map((projeto) => (
-              <CardProjeto key={projeto.id} projeto={projeto} />
+              <CardProjeto key={projeto.id_projeto} projeto={projeto} />
             ))}
           </div>
         )}
