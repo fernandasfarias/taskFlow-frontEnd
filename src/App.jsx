@@ -24,7 +24,7 @@ import ExibirProjeto from './pages/Projetos/ExibirProjeto';
 {/*import KanbanProjeto from './pages/Projetos/KanbanProjeto';*/}
 {/*import CronogramaProjeto from './pages/Projetos/CronogramaProjeto';*/}
 import ChatProjeto from './features/chat/ConversaPage';
-{/*import NovaAtividade from './pages/Projetos/NovaAtividade';*/}
+import CriarAtividade from './pages/atividade/CriarAtividade';
 
 export default function App() {
   return (
@@ -63,8 +63,7 @@ export default function App() {
       {/* <Route path="/projetos/:id/cronograma" element={<CronogramaProjeto />} /> */}
       
       <Route path="/projetos/:id/chat" element={<ChatProjeto />} />
-      
-      {/* <Route path="/projetos/:id/nova-atividade" element={<NovaAtividade />} /> */}
+      <Route path="/projetos/:idProjeto/nova-atividade" element={<CriarAtividade />} />
 
     </Routes>
   );
