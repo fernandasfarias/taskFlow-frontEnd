@@ -33,7 +33,7 @@ export default function CriarAtividade() {
       setLoading(true);
       setErro("");
 
-      await criarAtividade({
+      const atividadeCriada = await criarAtividade({
         nomeAtividade: form.nomeAtividade,
         descricaoAtividade: form.descricaoAtividade,
         dataInicio: form.dataInicio,
@@ -42,7 +42,8 @@ export default function CriarAtividade() {
         idProjeto: idProjeto,
       });
 
-      navigate(`/projetos/${idProjeto}`);
+      
+      navigate(`/atividades/${atividadeCriada.idAtividade}/associar-colaboradores`);
     } catch (error) {
       console.error(error);
       setErro("Não foi possível criar a atividade.");

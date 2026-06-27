@@ -25,6 +25,7 @@ import ExibirProjeto from './pages/Projetos/ExibirProjeto';
 {/*import CronogramaProjeto from './pages/Projetos/CronogramaProjeto';*/}
 import ChatProjeto from './features/chat/ConversaPage';
 import CriarAtividade from './pages/atividade/CriarAtividade';
+import AssociarColaboradoresAtividade from './pages/atividade/AssociarColaboradoresAtividade';
 import CriarTarefa from './pages/tarefa/CriarTarefa';
 
 export default function App() {
@@ -66,6 +67,8 @@ export default function App() {
       <Route path="/projetos/:id/chat" element={<ChatProjeto />} />
       <Route path="/projetos/:idProjeto/nova-atividade" element={<CriarAtividade />} />
       <Route path="/projetos/:idProjeto/nova-tarefa" element={<CriarTarefa />} />
+      
+      <Route path="/atividades/:idAtividade/associar-colaboradores" element={<AssociarColaboradoresAtividade />} />
 
     </Routes>
   );

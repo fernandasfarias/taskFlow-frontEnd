@@ -4,3 +4,17 @@ export async function criarAtividade(dados) {
   const response = await api.post("/atividades", dados);
   return response.data;
 }
+
+export async function listarColaboradores() {
+  const response = await api.get("/atividades/colaboradores");
+  return response.data;
+}
+
+export async function associarColaboradorAtividade(idAtividade, idColaborador) {
+  const response = await api.post("/atividades/associar-colaborador", {
+    idAtividade,
+    idColaborador,
+  });
+
+  return response.data;
+}
