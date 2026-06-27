@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 import Autenticacao from './pages/Autenticacao/index';
+import Kanban from './pages/kanban/KanBan';
 import DashBoardPage from './features/dashboard/DashBoardPage';
 import ListaConversasPage from './features/chat/ListaConversaPage';
 import ConversaPage from './features/chat/ConversaPage';
@@ -20,9 +21,6 @@ import Projeto from './pages/Projetos/Projeto';
 import AssociarUsuarios from './pages/Projetos/AssociarUsuarios';
 import ExibirProjeto from './pages/Projetos/ExibirProjeto';
 
-// Importações das novas telas de ações rápidas
-{/*import KanbanProjeto from './pages/Projetos/KanbanProjeto';*/}
-{/*import CronogramaProjeto from './pages/Projetos/CronogramaProjeto';*/}
 import ChatProjeto from './features/chat/ConversaPage';
 import CriarAtividade from './pages/atividade/CriarAtividade';
 import CriarTarefa from './pages/tarefa/CriarTarefa';
@@ -31,7 +29,7 @@ export default function App() {
   return (
     <Routes>
 
-      {/* tela de login, tela de cadastro e telas para redifinir as senhas.*/}
+      {/* tela de login, tela de cadastro e telas para redefinir as senhas.*/}
       <Route path="/" element={<Autenticacao />} />
       <Route path="/recuperar-senha" element={<RecuperarSenha />} />
       <Route path="/redefinir-senha" element={<RedefinirSenha />} />
@@ -58,11 +56,10 @@ export default function App() {
       <Route path="/projetos/:id" element={<ExibirProjeto />}></Route>
       <Route path="/projetos/editar/:id" element={<CriarProjetos />} />
       
-      {/* Novas rotas do projeto */}
-      {/* Comentadas até que os arquivos sejam criados */}
-      {/* <Route path="/projetos/:id/kanban" element={<KanbanProjeto />} /> */}
-      {/* <Route path="/projetos/:id/cronograma" element={<CronogramaProjeto />} /> */}
+      {/* Rota do Kanban */}
+      <Route path="/kanban" element={<Kanban />} />
       
+      {/* Rotas específicas de ação dentro do projeto */}
       <Route path="/projetos/:id/chat" element={<ChatProjeto />} />
       <Route path="/projetos/:idProjeto/nova-atividade" element={<CriarAtividade />} />
       <Route path="/projetos/:idProjeto/nova-tarefa" element={<CriarTarefa />} />
