@@ -63,9 +63,11 @@ export default function App() {
       {/* Rotas específicas de ação dentro do projeto */}
       <Route path="/projetos/:id/chat" element={<ChatProjeto />} />
       <Route path="/projetos/:idProjeto/nova-atividade" element={<CriarAtividade />} />
-      <Route path="/projetos/:idProjeto/nova-tarefa" element={<CriarTarefa />} />
+      <Route path="/projetos/:idProjeto/atividade/:idAtividade/nova-tarefa" element={<CriarTarefa />} />
+      <Route path="/projetos/:idProjeto/kanban" element={<Kanban />} />
       
       <Route path="/atividades/:idAtividade/associar-colaboradores" element={<AssociarColaboradoresAtividade />} />
+      <Route path="/projetos/:idProjeto/atividades/:idAtividade/editar" element={<CriarAtividade />} />
 
     </Routes>
   );
