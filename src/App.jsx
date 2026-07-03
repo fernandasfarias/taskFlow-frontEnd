@@ -24,6 +24,7 @@ import ExibirProjeto from './pages/Projetos/ExibirProjeto';
 import ChatProjeto from './features/chat/ConversaPage';
 import CriarAtividade from './pages/atividade/CriarAtividade';
 import AssociarColaboradoresAtividade from './pages/atividade/AssociarColaboradoresAtividade';
+import AssociarColaboradoresTarefa from './pages/tarefa/AssociarColaboradoresTarefa';
 import CriarTarefa from './pages/tarefa/CriarTarefa';
 
 export default function App() {
@@ -69,6 +70,7 @@ export default function App() {
       <Route path="/atividades/:idAtividade/associar-colaboradores" element={<AssociarColaboradoresAtividade />} />
       <Route path="/projetos/:idProjeto/atividades/:idAtividade/editar" element={<CriarAtividade />} />
       <Route path="/projetos/:idProjeto/atividade/:idAtividade/tarefas/:idTarefa/editar" element={<CriarTarefa />} />
+      <Route path="/atividade/:idAtividade/tarefas/:idTarefa/colaboradores" element={<AssociarColaboradoresTarefa />} />
 
     </Routes>
   );

@@ -55,11 +55,12 @@ export default function CriarTarefa() {
 
       if (editando) {
         await editarTarefa(idTarefa, form);
+        navigate(`/projetos/${idProjeto}/kanban`);
       } else {
-        await criarTarefa(idAtividade, form);
+        const tarefa = await criarTarefa(idAtividade, form);
+        navigate(`/atividade/${idAtividade}/tarefas/${tarefa.idTarefa}/colaboradores`);
       }
 
-      navigate(`/projetos/${idProjeto}/kanban`);
     } catch (error) {
       console.error(error);
       setErro("Não foi possível criar a tarefa.");
