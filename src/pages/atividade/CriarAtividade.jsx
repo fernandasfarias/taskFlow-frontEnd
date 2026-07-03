@@ -1,11 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { HiArrowLeft } from "react-icons/hi";
-import { criarAtividade } from "../../services/atividadeService";
+import {
+  buscarAtividade,
+  atualizarAtividade,
+  criarAtividade,
+} from "../../services/atividadeService";
 
 export default function CriarAtividade() {
   const navigate = useNavigate();
-  const { idProjeto } = useParams();
+  const { idProjeto, idAtividade } = useParams();
+  const modoEdicao = !!idAtividade;
 
   const [form, setForm] = useState({
     nomeAtividade: "",
@@ -26,6 +31,31 @@ export default function CriarAtividade() {
     });
   }
 
+   useEffect(() => {
+  if (!modoEdicao) return;
+
+  async function load() {
+    try {
+      const atividade = await buscarAtividade(idAtividade);
+
+      setForm({
+        nomeAtividade: atividade.nomeAtividade,
+        descricaoAtividade: atividade.descricaoAtividade,
+        dataInicio: atividade.dataInicio,
+        dataEntrega: atividade.dataEntrega,
+        statusAtividade: atividade.statusAtividade,
+        idMilestone: "",
+      });
+    } catch (error) {
+      console.error(error);
+      setErro("Erro ao carregar atividade.");
+    }
+  }
+
+  load();
+}, [modoEdicao, idAtividade]);
+
+
   async function handleSubmit(e) {
     e.preventDefault();
 
@@ -33,20 +63,35 @@ export default function CriarAtividade() {
       setLoading(true);
       setErro("");
 
-      const atividadeCriada = await criarAtividade({
-        nomeAtividade: form.nomeAtividade,
-        descricaoAtividade: form.descricaoAtividade,
-        dataInicio: form.dataInicio,
-        dataEntrega: form.dataEntrega,
-        statusAtividade: form.statusAtividade,
-        idProjeto: idProjeto,
-      });
+      if (modoEdicao) {
+        await atualizarAtividade(idAtividade, {
+          nomeAtividade: form.nomeAtividade,
+          descricaoAtividade: form.descricaoAtividade,
+          dataInicio: form.dataInicio,
+          dataEntrega: form.dataEntrega,
+          statusAtividade: form.statusAtividade,
+        });
 
-      
-      navigate(`/atividades/${atividadeCriada.idAtividade}/associar-colaboradores`);
+        navigate(`/projetos/${idProjeto}/kanban`);
+      } else {
+        const atividadeCriada = await criarAtividade({
+          nomeAtividade: form.nomeAtividade,
+          descricaoAtividade: form.descricaoAtividade,
+          dataInicio: form.dataInicio,
+          dataEntrega: form.dataEntrega,
+          statusAtividade: form.statusAtividade,
+          idProjeto: idProjeto,
+        });
+
+        navigate(
+          `/atividades/${atividadeCriada.idAtividade}/associar-colaboradores`,
+        );
+      }
     } catch (error) {
       console.error(error);
-      setErro("Não foi possível criar a atividade.");
+      setErro(
+        modoEdicao ? "Não foi possível atualizar." : "Não foi possível criar.",
+      );
     } finally {
       setLoading(false);
     }
@@ -61,7 +106,9 @@ export default function CriarAtividade() {
             className="flex items-center gap-3 mb-6 text-slate-300 hover:text-white"
           >
             <HiArrowLeft size={22} />
-            <span className="text-xl font-semibold">Nova Atividade</span>
+            <span className="text-xl font-semibold">
+              {modoEdicao ? "Editar Atividade" : "Nova Atividade"}
+            </span>
           </button>
 
           {erro && (
@@ -136,7 +183,11 @@ export default function CriarAtividade() {
                 disabled={loading}
                 className="w-44 bg-gradient-to-r from-[#6366f1] to-[#a855f7] rounded-lg py-3 font-semibold disabled:opacity-60"
               >
-                {loading ? "Salvando..." : "Criar Atividade"}
+                {loading
+                  ? "Salvando..."
+                  : modoEdicao
+                    ? "Salvar Alterações"
+                    : "Criar Atividade"}
               </button>
             </div>
           </form>

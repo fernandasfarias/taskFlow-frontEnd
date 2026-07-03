@@ -18,3 +18,12 @@ export async function associarColaboradorAtividade(idAtividade, idColaborador) {
 
   return response.data;
 }
+
+export async function buscarAtividade(idAtividade) {
+  const response = await api.get(`/atividades/${idAtividade}`);
+  return response.data;
+}
+
+export async function atualizarAtividade(idAtividade, dados) {
+  await api.put(`/atividades/${idAtividade}`, dados);
+}
