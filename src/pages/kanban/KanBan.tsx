@@ -6,7 +6,7 @@ import {
   alterarStatusAtividade,
   excluir,
   buscarDetalhesAtividade,
-} from "../../services/kanbanService";
+} from "../../services/atividadeService";
 import { excluirTarefa } from "../../services/tarefaService";
 
 const colunasBase = [
@@ -225,7 +225,7 @@ export default function Kanban() {
     }
   }
 
-  async function handleExcluir(idTarefa) {
+  async function handleExcluir(idTarefa: any) {
     const confirmar = window.confirm("Deseja realmente excluir esta tarefa?");
 
     if (!confirmar) return;
@@ -326,6 +326,21 @@ export default function Kanban() {
     setModalRenomearColuna(false);
     setColunaParaRenomear(null);
   };
+
+  function formatarStatus(status: any) {
+  switch (status) {
+    case "PENDENTE":
+      return "Pendente";
+    case "EM_ANDAMENTO":
+      return "Em andamento";
+    case "CONCLUIDA":
+      return "Concluída";
+    case "CANCELADA":
+      return "Cancelada";
+    default:
+      return status;
+  }
+}
 
   return (
     <>
@@ -566,12 +581,12 @@ export default function Kanban() {
                     `/projetos/${idProjeto}/atividade/${atividadeDetalhe.idAtividade}/nova-tarefa`,
                   )
                 }
-                className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-medium transition"
+                className="bg-gradient-to-r from-[#6366f1] to-[#a855f7] text-white px-6 py-3 rounded-xl font-medium transition hover:opacity-90 transition-all shadow-md shadow-[#6366f1]/20"
               >
                 + Criar Tarefa
               </button>
 
-              <button className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-medium transition">
+              <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-medium transition">
                 + Criar Milestone
               </button>
             </div>
@@ -643,16 +658,14 @@ export default function Kanban() {
                         </h4>
 
                         <p className="text-gray-400 mt-1">
-                          {tarefa.statusTarefa}
+                          {formatarStatus(tarefa.statusTarefa)}
                         </p>
                       </div>
 
                       <div className="flex gap-3">
                         <button
                           onClick={() =>
-                            navigate(
-                              `/projetos/${idProjeto}/tarefas/${tarefa.idTarefa}/editar`,
-                            )
+                            navigate(`/projetos/${idProjeto}/atividade/${atividadeDetalhe.idAtividade}/tarefas/${tarefa.idTarefa}/editar`)
                           }
                           className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition"
                         >

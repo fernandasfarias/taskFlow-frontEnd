@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { HiArrowLeft } from "react-icons/hi";
-import { criarTarefa } from "../../services/tarefaService";
+import { criarTarefa, buscarTarefa, editarTarefa } from "../../services/tarefaService";
 
 export default function CriarTarefa() {
   const navigate = useNavigate();
 
-  const { idProjeto, idAtividade } = useParams();
+  const { idProjeto, idAtividade, idTarefa } = useParams();
+
+  const editando = !!idTarefa;
 
   const [form, setForm] = useState({
     nomeTarefa: "",
@@ -17,6 +19,23 @@ export default function CriarTarefa() {
 
   const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState("");
+
+  useEffect(() => {
+    async function carregar() {
+      if (!idTarefa) return;
+
+      const tarefa = await buscarTarefa(idTarefa);
+
+      setForm({
+        nomeTarefa: tarefa.nomeTarefa,
+        dataInicio: tarefa.dataInicio,
+        dataEntrega: tarefa.dataEntrega,
+        statusTarefa: tarefa.statusTarefa,
+      });
+    }
+
+    carregar();
+  }, [idTarefa]);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -34,7 +53,11 @@ export default function CriarTarefa() {
       setLoading(true);
       setErro("");
 
-      await criarTarefa(idAtividade, form);
+      if (editando) {
+        await editarTarefa(idTarefa, form);
+      } else {
+        await criarTarefa(idAtividade, form);
+      }
 
       navigate(`/projetos/${idProjeto}/kanban`);
     } catch (error) {
@@ -48,14 +71,15 @@ export default function CriarTarefa() {
   return (
     <div className="min-h-screen bg-[#090d16] text-white flex items-center justify-center p-6">
       <div className="w-full max-w-3xl bg-[#101827] border-2 border-[#33415f] rounded-2xl p-10">
-
         <button
           type="button"
           onClick={() => navigate(-1)}
           className="flex items-center gap-3 mb-8 text-slate-300 hover:text-white transition"
         >
           <HiArrowLeft size={22} />
-          <span className="text-2xl font-semibold">Nova Tarefa</span>
+          <span className="text-2xl font-semibold">
+            {editando ? "Editar Tarefa" : "Nova Tarefa"}
+          </span>
         </button>
 
         {erro && (
@@ -65,7 +89,6 @@ export default function CriarTarefa() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
-
           <div>
             <label className="block text-sm text-slate-300 mb-2">
               Nome da tarefa
@@ -83,7 +106,6 @@ export default function CriarTarefa() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-5">
-
             <div>
               <label className="block text-sm text-slate-300 mb-2">
                 Data de início
@@ -113,13 +135,10 @@ export default function CriarTarefa() {
                 className="w-full h-12 rounded-xl bg-[#0f172a] border border-[#334155] px-4 outline-none focus:border-violet-500"
               />
             </div>
-
           </div>
 
           <div>
-            <label className="block text-sm text-slate-300 mb-2">
-              Status
-            </label>
+            <label className="block text-sm text-slate-300 mb-2">Status</label>
 
             <select
               name="statusTarefa"
@@ -135,7 +154,6 @@ export default function CriarTarefa() {
           </div>
 
           <div className="flex justify-end gap-4 pt-6">
-
             <button
               type="button"
               onClick={() => navigate(-1)}
@@ -149,13 +167,10 @@ export default function CriarTarefa() {
               disabled={loading}
               className="px-8 py-3 rounded-xl bg-violet-600 hover:bg-violet-700 disabled:opacity-60"
             >
-              {loading ? "Salvando..." : "Proximo"}
+              {loading ? "Salvando..." : editando ? "Atualizar" : "Próximo"}
             </button>
-
           </div>
-
         </form>
-
       </div>
     </div>
   );

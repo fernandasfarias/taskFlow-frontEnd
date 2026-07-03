@@ -27,3 +27,24 @@ export async function buscarAtividade(idAtividade) {
 export async function atualizarAtividade(idAtividade, dados) {
   await api.put(`/atividades/${idAtividade}`, dados);
 }
+
+export async function alterarStatusAtividade( idProjeto, idAtividade, status ) {
+  await api.patch(`atividades/${idAtividade}/status`, {
+    status
+  });
+}
+
+export async function excluir(idProjeto, idAtividade) {
+  const response = await api.delete(`/atividades/${idAtividade}/excluir`);
+  return response.data;
+}
+
+export async function buscarDetalhesAtividade(idProjeto, idAtividade) {
+  const response = await api.get(`/atividades/${idAtividade}/detalhes`);
+  return response.data;
+}
+
+export async function listarKanban(idProjeto) {
+  const response = await api.get(`/atividades/${idProjeto}/kanban`);
+  return response.data;
+}
