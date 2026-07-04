@@ -4,8 +4,7 @@ import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import StatsSection from "./components/StatsSection";
 import CardProjeto from "../../pages/Projetos/CardProjeto";
-import { DashboardService } from "./services/DashboardService";
-import { listarProjetos, buscarProjetos } from "../../services/projetoService";
+import { listarProjetos, getStats, getUserProfile, searchProjects } from "../../services/projetoService";
 
 import {
   HiOutlineSearch,
@@ -51,8 +50,8 @@ export default function DashBoardPage() {
         setLoading(true);
 
         const [backendStats, backendUser] = await Promise.all([
-          DashboardService.getStats(),
-          DashboardService.getUserProfile()
+          getStats(),
+          getUserProfile()
         ]);
 
         setStats({
@@ -82,7 +81,7 @@ export default function DashBoardPage() {
       setBuscando(true);
 
       const resposta = busca.trim()
-        ? await DashboardService.searchProjects(busca)
+        ? await searchProjects(busca)
         : await listarProjetos();
 
       setProjects(normalizarProjetos(resposta));
