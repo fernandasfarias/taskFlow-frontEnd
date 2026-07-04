@@ -27,7 +27,7 @@ export default function CadastroCertificacoes() {
         urlComprovante: dados.urlComprovante
       }];
 
-      const response = await fetch("http://localhost:8080/onboarding/certificacoes", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/onboarding/certificacoes`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
