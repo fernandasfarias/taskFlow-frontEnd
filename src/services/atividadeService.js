@@ -48,3 +48,9 @@ export async function listarKanban(idProjeto) {
   const response = await api.get(`/atividades/${idProjeto}/kanban`);
   return response.data;
 }
+
+// métodos para listar todas as atividades do projeto
+export async function listarAtividadesProjeto(idProjeto){
+  const { data } = await api.get(`/atividades/projeto/${idProjeto}`);
+  return data;
+}

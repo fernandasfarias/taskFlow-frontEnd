@@ -30,3 +30,9 @@ export async function associarColaboradorTarefa(idTarefa, idColaborador) {
     idColaborador,
   });
 }
+
+// método para listar todas as tarefas que pertencem a uma atividade
+export async function listarTarefasAtividade(idAtividade){
+  const {data} = await api.get(`/atividades/${idAtividade}/tarefas`);
+  return data;
+}
