@@ -4,7 +4,8 @@ import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import StatsSection from "./components/StatsSection";
 import CardProjeto from "../../pages/Projetos/CardProjeto";
-import { listarProjetos, getStats, getUserProfile, searchProjects } from "../../services/projetoService";
+// Usaremos apenas o serviço que já funciona perfeitamente:
+import { listarProjetos, buscarProjetos } from "../../services/projetoService";
 
 import {
   HiOutlineSearch,
@@ -44,27 +45,59 @@ export default function DashBoardPage() {
     return [];
   }
 
+  // EFEITO 1: Carrega os dados iniciais, usuário e calcula as estatísticas
   useEffect(() => {
     async function loadDashboardData() {
       try {
         setLoading(true);
+        setErro(""); // Garante que a barra de erro inicie limpa
 
-        const [backendStats, backendUser] = await Promise.all([
-          getStats(),
-          getUserProfile()
-        ]);
+        // 1. Pega os dados do usuário direto do Token (Rápido e sem erro 400)
+        const token = localStorage.getItem("token");
+        if (token) {
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          setUser({
+            name: payload.sub,
+            role: payload.role,
+            avatarUrl: ""
+          });
+        }
 
-        setStats({
-          total: backendStats.total ?? 0,
-          emAndamento: backendStats.emAndamento ?? 0,
-          concluidos: backendStats.concluidos ?? 0,
-          aFazer: backendStats.aFazer ?? 0,
+        // 2. Busca a lista de projetos reais do banco
+        const resposta = await listarProjetos();
+        const projetosArray = normalizarProjetos(resposta);
+        
+        setProjects(projetosArray);
+
+        // 3. Calcula as estatísticas dinamicamente!
+        const hoje = new Date();
+        let emAndamentoCount = 0;
+        let concluidosCount = 0; // Você pode adaptar para 'vencidos' dependendo da sua regra
+        let aFazerCount = 0;
+
+        projetosArray.forEach(proj => {
+            const dataInicio = new Date(proj.dataInicio);
+            const dataEntrega = new Date(proj.dataEntrega);
+
+            if (hoje < dataInicio) {
+                aFazerCount++;
+            } else if (hoje > dataEntrega) {
+                concluidosCount++; 
+            } else {
+                emAndamentoCount++;
+            }
         });
 
-        setUser(backendUser);
+        setStats({
+          total: projetosArray.length,
+          emAndamento: emAndamentoCount,
+          concluidos: concluidosCount,
+          aFazer: aFazerCount,
+        });
+
       } catch (error) {
         console.error("Erro ao carregar dashboard:", error);
-        setErro("Não foi possível carregar os dados do dashboard.");
+        setErro("Não foi possível carregar os projetos do dashboard.");
       } finally {
         setLoading(false);
       }
@@ -73,28 +106,29 @@ export default function DashBoardPage() {
     loadDashboardData();
   }, []);
 
- useEffect(() => {
-  if (loading) return;
+  // EFEITO 2: Gerencia a barra de busca
+  useEffect(() => {
+    if (loading) return;
 
-  const timer = setTimeout(async () => {
-    try {
-      setBuscando(true);
+    const timer = setTimeout(async () => {
+      try {
+        setBuscando(true);
 
-      const resposta = busca.trim()
-        ? await searchProjects(busca)
-        : await listarProjetos();
+        const resposta = busca.trim()
+          ? await buscarProjetos(busca) // Substituído para usar o seu projetoService
+          : await listarProjetos();
 
-      setProjects(normalizarProjetos(resposta));
-    } catch (error) {
-      console.error(error);
-      setErro("Não foi possível carregar os projetos.");
-    } finally {
-      setBuscando(false);
-    }
-  }, 400);
+        setProjects(normalizarProjetos(resposta));
+      } catch (error) {
+        console.error(error);
+        setErro("Não foi possível realizar a busca.");
+      } finally {
+        setBuscando(false);
+      }
+    }, 400);
 
-  return () => clearTimeout(timer);
-}, [busca, loading]);
+    return () => clearTimeout(timer);
+  }, [busca, loading]);
 
   if (loading) {
     return (
@@ -163,7 +197,7 @@ export default function DashBoardPage() {
 
             {!busca && (
               <button
-                onClick={() => navigate("/projetos/criar")}
+                onClick={() => navigate("/projetos/novo")}
                 className="mt-4 text-sm text-[#6366f1] hover:underline"
               >
                 Criar primeiro projeto →
@@ -173,7 +207,7 @@ export default function DashBoardPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {projects.map((projeto) => (
-              <CardProjeto key={projeto.id_projeto} projeto={projeto} />
+              <CardProjeto key={projeto.id_projeto || projeto.id} projeto={projeto} />
             ))}
           </div>
         )}

@@ -62,7 +62,7 @@ export default function App() {
       <Route path="/kanban" element={<Kanban />} />
       
       {/* Rotas específicas de ação dentro do projeto */}
-      <Route path="/projetos/:id/chat" element={<ChatProjeto />} />
+      <Route path="/chat/:idProjeto" element={<ConversaPage />} />  
       <Route path="/projetos/:idProjeto/nova-atividade" element={<CriarAtividade />} />
       <Route path="/projetos/:idProjeto/atividade/:idAtividade/nova-tarefa" element={<CriarTarefa />} />
       <Route path="/projetos/:idProjeto/kanban" element={<Kanban />} />

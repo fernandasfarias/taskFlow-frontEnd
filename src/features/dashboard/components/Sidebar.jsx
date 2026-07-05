@@ -76,20 +76,31 @@ export default function Sidebar({ user, isOpen, setIsOpen }) {
 
           {/* Menu */}
           <nav className="space-y-2">
-            {menuItems.map((item, index) => (
-              <button
-                key={index}
-                onClick={() => handleNavigation(item.path)}
-                className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 font-medium ${
-                  location.pathname === item.path 
-                    ? 'bg-gradient-to-r from-[#6366f1] to-[#a855f7] text-white shadow-lg shadow-[#6366f1]/20' 
-                    : 'hover:bg-[#1e293b] hover:text-white'
-                }`}
-              >
-                {item.icon}
-                <span>{item.name}</span>
-              </button>
-            ))}
+            {menuItems.map((item, index) => {
+              // Verifica se o item é o Chat e se o usuário é Colaborador
+              const isChat = item.name === 'Chat';
+              const isColaborador = perfil?.tipo === "COLABORADOR";
+              const isChatDisabled = isChat && isColaborador;
+
+              return (
+                <button
+                  key={index}
+                  onClick={() => !isChatDisabled && handleNavigation(item.path)}
+                  disabled={isChatDisabled}
+                  className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 font-medium ${
+                    location.pathname === item.path 
+                      ? 'bg-gradient-to-r from-[#6366f1] to-[#a855f7] text-white shadow-lg shadow-[#6366f1]/20' 
+                      : 'hover:bg-[#1e293b] hover:text-white'
+                  } ${
+                    isChatDisabled ? 'opacity-40 cursor-not-allowed hover:bg-transparent hover:text-[#94a3b8]' : ''
+                  }`}
+                  title={isChatDisabled ? 'Acesso restrito para colaboradores' : ''}
+                >
+                  {item.icon}
+                  <span>{item.name}</span>
+                </button>
+              );
+            })}
           </nav>
         </div>
 
