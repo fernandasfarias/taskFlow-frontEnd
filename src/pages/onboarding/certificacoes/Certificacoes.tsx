@@ -52,13 +52,6 @@ export default function CadastroCertificacoes() {
     }
   };
 
-  const irParaDashboard = () => {
-    navigate('/dashboard');
-  };
-
-  const voltarParaCadastro = () => {
-    navigate(-1); 
-  };
 
   const inputEstilo = "w-full placeholder-[#98928A] bg-transparent text-base md:text-xl py-6 px-8 rounded-2xl border-[2px] border-solid border-[#30363D] focus:border-[#7C3AED] focus:outline-none transition-colors font-normal text-white";
 
