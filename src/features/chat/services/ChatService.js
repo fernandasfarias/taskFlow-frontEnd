@@ -5,7 +5,7 @@ import MensagemBubble from '../components/MensagemBubble';
 import MensagemInput from '../components/MensagemInput';
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080';
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const ChatService = {
 
