@@ -15,6 +15,8 @@ import { SlLogout } from "react-icons/sl";
 
 import { excluirConta } from "../../services/perfilService";
 
+import { listarMinhasCertificacoes, removerCertificacao } from "../../services/certificacaoService";
+
 export default function Profile(){
 
     const [perfil, setPerfil] = useState({nome: "", email: "", senha: "", tipo: ""});
@@ -32,12 +34,22 @@ export default function Profile(){
     // navegar para a tela de alterar senha
     const navigate = useNavigate();
 
+    // certificações do project manager
+    const [certificacoes, setCertificacoes] = useState([]);
+
     useEffect(()=>{
         async function carregarPerfil(){
             try {
                 const data = await getPerfil();
                 console.log(data);
+
                 setPerfil(data);
+
+                if(data.tipo === "PROJECT_MANAGER"){
+                    const certs = await listarMinhasCertificacoes();
+                    setCertificacoes(certs || []);
+                }
+
             } catch (error) {
                 console.log("Erro ao carregar o perfil", error);
             }
@@ -85,6 +97,34 @@ export default function Profile(){
         navigate("/");
     }
 
+    {/* MÉTODO PARA REMOVER CERTIFICAÇÃO DO PROJECT MANAGER */}
+    const removerCertificacao = async(nome) => {
+        const filtradas = certificacoes.filter(c => c.nome !== nome);
+
+        try{
+            await putEditandoDados({ certificacoes: filtradas});
+            setCertificacoes(filtradas);
+        } catch(err){
+            console.log(err);
+        }
+    }
+
+    const handleRemover = async(id) => {
+        try{
+            await removerCertificacao(id);
+            setCertificacoes(prev => prev.filter(c => c.id !== id));
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    {/* IR PARA A TELA DE CRIAÇÃO DE CERTIFICADO */}
+    const irParaCertificacoes = () => {
+        navigate("/onboarding/certificacoes", {
+            state: {origem: "profile"}
+        });
+    }
+
     return(
         <div className="flex min-h-screen bg-[#0d121f] text-[#94a3b8]">
             <Sidebar user={{name: perfil.nome, role: perfil.tipo}}
@@ -109,7 +149,7 @@ export default function Profile(){
                                 <>
                                     <div className="flex items-center justify-center gap-2 mt-2 mb-5">
                                         <input value={novoNome} onChange={(e)=>setNovoNome(e.target.value)}
-                                               className="bg-[#0d121f] border border-slate-600 rounded px-3 py-2 hover:border-white transition duration-500"/>
+                                                className="bg-[#0d121f] border border-slate-600 rounded px-3 py-2 hover:border-white transition duration-500"/>
                                         <button onClick={salvarNome} className="text-[#94a3b8] hover:text-green-400 cursor-pointer">Salvar</button>
                                     </div>
                                 </>
@@ -132,7 +172,7 @@ export default function Profile(){
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {/*email*/}
-                        <div className="mb-5 group bg-gradient-to-r from-[#4C1D95] via-[#9B5CFF] to-[#C084FC] p-[1px] rounded-xl opacity-40 hover:opacity-100 transition-all duration-300">
+                        <div className="mb-5 group bg-gradient-to-r from-[#4C1D95] via-[#9B5CFF] to-[#C084FC] p-[1px] rounded-xl">
                             <div className="rounded-xl bg-[#0d121f] p-4 text-center">
                                 <span className="text-xs uppercase tracking-wide text-slate-400 font-bold">E-mail</span>
 
@@ -157,7 +197,7 @@ export default function Profile(){
                         </div>
 
                         {/*senha*/}
-                        <div className="mb-5 group bg-gradient-to-r from-[#4C1D95] via-[#9B5CFF] to-[#C084FC] p-[1px] rounded-xl opacity-40 hover:opacity-100 transition-all duration-300">
+                        <div className="mb-5 group bg-gradient-to-r from-[#4C1D95] via-[#9B5CFF] to-[#C084FC] p-[1px] rounded-xl">
                             <div className="rounded-xl bg-[#0d121f] p-4 text-center">
                                 <span className="text-xs uppercase tracking-wide text-slate-400 font-bold">SENHA</span>
                                 <div className="flex items-center justify-center gap-2 mt-2">
@@ -169,7 +209,7 @@ export default function Profile(){
                         </div>
 
                         {/* deslogar */}
-                        <div className="mb-5 group bg-gradient-to-r from-[#4C1D95] via-[#9B5CFF] to-[#C084FC] p-[1px] rounded-xl opacity-40 hover:opacity-100 transition-all duration-300">
+                        <div className="mb-5 group bg-gradient-to-r from-[#4C1D95] via-[#9B5CFF] to-[#C084FC] p-[1px] rounded-xl">
                             <div className="rounded-xl bg-[#0d121f] p-4 text-center cursor-pointer">
                                 <span className="text-xs uppercase tracking-wide text-slate-400 font-bold">SAIR DA CONTA</span>
                                 <div onClick={logout}
@@ -181,7 +221,7 @@ export default function Profile(){
                         </div>
 
                         {/* excluir a  conta */}
-                        <div className="mb-5 group border border-red-400 p-[15px] rounded-xl opacity-40 hover:opacity-100">
+                        <div className="mb-5 group border border-red-400 p-[15px] rounded-xl">
                                 <span className="text-xs uppercase tracking-wide text-slate-400 font-bold">ZONA DE PERIGO</span>
                                 <div onClick={deletarConta} className="flex items-center justify-center gap-2 mt-2 cursor-pointer">
                                     <span className="text-base text-slate-300">EXCLUIR SUA CONTA?</span>
@@ -191,6 +231,30 @@ export default function Profile(){
                     </div>
                     </div>
                 </div>
+
+                {/* CERTIFICAÇÕES DO PROJECT MANAGER */}
+                {perfil?.tipo === "PROJECT_MANAGER" && (
+                    <div className="mt-10">
+                        <h2 className="text-white text-lg font-semibold mb-3 text-center">Certificações</h2>
+
+                        {/* input de cert. */}
+                        <button
+                        onClick={irParaCertificacoes}
+                        className="mb-6 px-5 py-2 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-xl transition">Adicionar Certificação</button>
+
+                        {/* lista */}
+                        <div className="flex flex-col gap-2 items-center">
+                            {certificacoes.map((cert) => (
+                                <div key={cert.id}
+                                className="flex items-center justify-between w-[340px] bg-[#141B2D] px-5 py-3 rounded-xl border border-[#1F2937]">
+                                    <span className="text-white text-sm">{cert.certificacoes}</span>
+                                    <button onClick={() => handleRemover(cert.id)}
+                                        className="text-red-400 hover:text-red-500 text-sm">Remover</button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
             </main>
         </div>
     )
