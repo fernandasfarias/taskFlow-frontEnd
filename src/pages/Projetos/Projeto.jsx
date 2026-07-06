@@ -236,30 +236,32 @@ export default function Projeto() {
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {projetos.map((projeto) => (
               <div key={projeto.id} className="relative group">
-                <div className="absolute top-4 right-4 z-20 hidden group-hover:flex gap-2">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate(`/projetos/editar/${projeto.id}`, {
-                        state: { projeto },
-                      });
-                    }}
-                    className="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-blue-600 hover:bg-blue-700"
-                  >
-                    Editar
-                  </button>
-
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setProjetoParaExcluir(projeto);
-                      setModalExcluirAberto(true);
-                    }}
-                    className="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-red-600 hover:bg-red-700"
-                  >
-                    Excluir
-                  </button>
-                </div>
+                {perfil.tipo === "PROJECT_MANAGER" && (
+                  <div className="absolute top-4 right-4 z-20 hidden group-hover:flex gap-2">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/projetos/editar/${projeto.id}`, {
+                          state: { projeto },
+                        });
+                      }}
+                      className="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-blue-600 hover:bg-blue-700"
+                    >
+                      Editar
+                    </button>
+  
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setProjetoParaExcluir(projeto);
+                        setModalExcluirAberto(true);
+                      }}
+                      className="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-red-600 hover:bg-red-700"
+                    >
+                      Excluir
+                    </button>
+                  </div>
+                )}
 
                 <CardProjeto projeto={projeto} />
               </div>

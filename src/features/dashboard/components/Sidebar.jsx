@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { HiOutlineHome, HiOutlineFolder, HiOutlineCalendar, HiOutlineClipboardList, HiOutlineChatAlt2, HiOutlineChartBar, HiOutlineAdjustments, HiMenu, HiX } from 'react-icons/hi';
+import { 
+  HiOutlineHome, 
+  HiOutlineFolder, 
+  HiOutlineCalendar, 
+  HiOutlineClipboardList, 
+  HiOutlineChatAlt2, 
+  HiOutlineBookOpen, 
+  HiMenu, 
+  HiX 
+} from 'react-icons/hi';
 import { MdKeyboardArrowDown } from 'react-icons/md';
 import logoImg from '../../../assets/Frame2.png';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -22,14 +31,14 @@ export default function Sidebar({ user, isOpen, setIsOpen }) {
     carregarPerfil();
   }, []);
 
+  // Atualizamos os botões da Sidebar aqui
   const menuItems = [
     { name: 'Home', path: '/dashboard', icon: <HiOutlineHome size={20} /> },
     { name: 'Projetos', path: '/projetos', icon: <HiOutlineFolder size={20} /> },
     { name: 'Cronograma', path: '/cronograma', icon: <HiOutlineCalendar size={20} /> },
     { name: 'Kanban', path: '/kanban', icon: <HiOutlineClipboardList size={20} /> },
     { name: 'Chat', path: '/chat', icon: <HiOutlineChatAlt2 size={20} /> },
-    { name: 'Relatórios', path: '/relatorios', icon: <HiOutlineChartBar size={20} /> },
-    { name: 'Configurações', path: '/configuracoes', icon: <HiOutlineAdjustments size={20} /> },
+    { name: 'Tutorial', path: '/tutorial', icon: <HiOutlineBookOpen size={20} /> },
   ];
 
   const handleNavigation = (path) => {
@@ -107,7 +116,7 @@ export default function Sidebar({ user, isOpen, setIsOpen }) {
         {/* Perfil */}
         <div
             onClick={() => handleNavigation('/profile')}
-            className="flex items-center justify-between p-2 rounded-xl bg-[#141b2d] border border-[#1e293b] cursor-pointer">
+            className="flex items-center justify-between p-2 rounded-xl bg-[#141b2d] border border-[#1e293b] cursor-pointer hover:border-[#6366f1] transition-colors">
           <div className="flex items-center gap-3">
             <img 
               src={fotoPerfil} 
@@ -121,7 +130,7 @@ export default function Sidebar({ user, isOpen, setIsOpen }) {
               </span>
             </div>
           </div>
-          <MdKeyboardArrowDown className="cursor-pointer hover:text-white" size={20} />
+          <MdKeyboardArrowDown className="cursor-pointer text-gray-400 hover:text-white" size={20} />
         </div>
       </aside>
     </>

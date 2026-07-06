@@ -6,6 +6,8 @@ import {
     HiOutlineClipboardList, HiOutlineUsers, HiX,
     HiOutlineViewBoards, HiOutlineChat, HiOutlinePlus
 } from 'react-icons/hi';
+// Importação do ícone de bloqueio adicionada aqui:
+import { MdBlock } from 'react-icons/md';
 import Sidebar from '../../features/dashboard/components/Sidebar';
 import {
     buscarProjeto,
@@ -56,7 +58,7 @@ function EmpresaAvatar() {
     );
 }
 
-function PessoaRow({ nome, subtitulo, isCliente, onRemover, removendo }) {
+function PessoaRow({ nome, subtitulo, isCliente, onRemover, removendo, isManager }) {
     return (
         <div className="flex items-center gap-3 py-3 border-b border-[#1e293b] last:border-0">
             {isCliente ? <EmpresaAvatar /> : <InitialAvatar nome={nome} />}
@@ -64,14 +66,20 @@ function PessoaRow({ nome, subtitulo, isCliente, onRemover, removendo }) {
                 <p className="text-sm font-medium text-white truncate">{nome}</p>
                 <p className="text-xs text-[#64748b] truncate">{subtitulo}</p>
             </div>
+            
             <button
-                onClick={onRemover}
-                disabled={removendo}
-                className="w-7 h-7 rounded-full flex items-center justify-center text-[#475569] hover:text-red-400 hover:bg-red-400/10 transition-colors disabled:opacity-40 shrink-0"
+                onClick={isManager ? onRemover : undefined}
+                disabled={removendo || !isManager}
+                title={!isManager ? "Apenas o Project Manager pode remover" : "Remover"}
+                className={`w-7 h-7 rounded-full flex items-center justify-center transition-colors shrink-0 ${
+                    !isManager 
+                        ? 'text-slate-500 bg-slate-800/50 cursor-not-allowed' 
+                        : 'text-[#475569] hover:text-red-400 hover:bg-red-400/10 disabled:opacity-40'
+                }`}
             >
                 {removendo
                     ? <span className="w-3 h-3 border border-current border-t-transparent rounded-full animate-spin" />
-                    : <HiX size={14} />
+                    : (!isManager ? <MdBlock size={13} /> : <HiX size={14} />)
                 }
             </button>
         </div>
@@ -211,17 +219,24 @@ export default function ExibirProjeto() {
                             </div>
                         </div>
 
-                        <button
-                            onClick={() => navigate('/projetos/associar-colaboradores', {
-                                state: { projeto, from: `/projetos/${id}` }
-                            })}
-                            className="shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white
-                                bg-gradient-to-r from-[#6366f1] to-[#a855f7]
-                                hover:opacity-90 hover:shadow-lg hover:shadow-[#6366f1]/30 transition-all"
-                        >
-                            <HiOutlineUsers size={16} />
-                            Gerenciar equipe
-                        </button>
+                        {user.role === 'PROJECT_MANAGER' ? (
+                            <button
+                                onClick={() => navigate('/projetos/associar-colaboradores', { state: { projeto, from: `/projetos/${id}` } })}
+                                className="shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-[#6366f1] to-[#a855f7] hover:opacity-90 hover:shadow-lg hover:shadow-[#6366f1]/30 transition-all"
+                            >
+                                <HiOutlineUsers size={16} />
+                                Gerenciar equipe
+                            </button>
+                        ) : (
+                            <button
+                                disabled
+                                title="Apenas o Project Manager pode gerenciar a equipe"
+                                className="shrink-0 flex items-center justify-center gap-2 bg-slate-700 text-slate-400 px-4 py-2.5 rounded-xl font-semibold text-sm cursor-not-allowed"
+                            >
+                                <MdBlock size={16} />
+                                Gerenciar equipe
+                            </button>
+                        )}
                     </div>
 
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -251,7 +266,6 @@ export default function ExibirProjeto() {
                         />
                     </div>
 
-                    {/* Botões de Ações Rápidas */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <button
                             onClick={() => navigate(`/projetos/${id}/kanban`)}
@@ -268,19 +282,31 @@ export default function ExibirProjeto() {
                             Cronograma
                         </button>
                         <button
-                            onClick={() => navigate(`/projetos/${id}/chat`)}
+                            onClick={() => navigate(`/chat/${id}`)}
                             className="flex items-center justify-center gap-2 px-4 py-3 bg-[#141b2d] border border-[#1e293b] rounded-xl text-sm font-semibold text-white hover:bg-[#1e293b] hover:border-[#3b82f6]/50 transition-all shadow-sm"
                         >
                             <HiOutlineChat size={18} className="text-[#3b82f6]" />
                             Chat
                         </button>
-                        <button
-                            onClick={() => navigate(`/projetos/${id}/nova-atividade`)}
-                            className="flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-[#6366f1] to-[#a855f7] rounded-xl text-sm font-bold text-white hover:opacity-90 transition-all shadow-md shadow-[#6366f1]/20"
-                        >
-                            <HiOutlinePlus size={18} />
-                            Add Atividade
-                        </button>
+                        
+                        {user.role === 'PROJECT_MANAGER' ? (
+                            <button
+                                onClick={() => navigate(`/projetos/${id}/nova-atividade`)}
+                                className="flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-[#6366f1] to-[#a855f7] rounded-xl text-sm font-bold text-white hover:opacity-90 transition-all shadow-md shadow-[#6366f1]/20"
+                            >
+                                <HiOutlinePlus size={18} />
+                                Add Atividade
+                            </button>
+                        ) : (
+                            <button
+                                disabled
+                                title="Apenas o Project Manager pode adicionar atividades"
+                                className="flex items-center justify-center gap-2 px-4 py-3 bg-slate-700 text-slate-400 rounded-xl text-sm font-bold cursor-not-allowed"
+                            >
+                                <MdBlock size={18} />
+                                Add Atividade
+                            </button>
+                        )}
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -300,6 +326,7 @@ export default function ExibirProjeto() {
                                         isCliente={false}
                                         removendo={removendoColab.has(c.idColaborador)}
                                         onRemover={() => handleRemoverColab(c.idColaborador)}
+                                        isManager={user.role === 'PROJECT_MANAGER'} 
                                     />
                                 ))
                             )}
@@ -321,6 +348,7 @@ export default function ExibirProjeto() {
                                         isCliente={true}
                                         removendo={removendoCliente.has(c.idCliente)}
                                         onRemover={() => handleRemoverCliente(c.idCliente)}
+                                        isManager={user.role === 'PROJECT_MANAGER'} 
                                     />
                                 ))
                             )}
