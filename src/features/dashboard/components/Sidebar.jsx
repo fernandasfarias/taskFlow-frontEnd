@@ -35,15 +35,16 @@ export default function Sidebar({ user, isOpen, setIsOpen }) {
   const menuItems = [
     { name: 'Home', path: '/dashboard', icon: <HiOutlineHome size={20} /> },
     { name: 'Projetos', path: '/projetos', icon: <HiOutlineFolder size={20} /> },
-    { name: 'Cronograma', path: '/cronograma', icon: <HiOutlineCalendar size={20} /> },
-    { name: 'Kanban', path: '/kanban', icon: <HiOutlineClipboardList size={20} /> },
     { name: 'Chat', path: '/chat', icon: <HiOutlineChatAlt2 size={20} /> },
-    { name: 'Tutorial', path: '/tutorial', icon: <HiOutlineBookOpen size={20} /> },
+    { name: 'Tutorial', url: 'https://github.com/fernandasfarias/taskFlow-frontEnd/blob/main/README.md', icon: <HiOutlineBookOpen size={20} /> },
   ];
 
-  const handleNavigation = (path) => {
-    navigate(path);
-    // Fecha a sidebar no mobile após o clique
+  const handleNavigation = (item) => {
+    if(item.url){
+      window.open(item.url, "_blank");  
+    } else {
+      navigate(item.path);
+    }
     setIsOpen(false);
   };
 
@@ -94,7 +95,7 @@ export default function Sidebar({ user, isOpen, setIsOpen }) {
               return (
                 <button
                   key={index}
-                  onClick={() => !isChatDisabled && handleNavigation(item.path)}
+                  onClick={() => !isChatDisabled && handleNavigation(item)}
                   disabled={isChatDisabled}
                   className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 font-medium ${
                     location.pathname === item.path 
