@@ -11,6 +11,8 @@ import { FaTrashAlt } from "react-icons/fa";
 import { SlLogout } from "react-icons/sl";
 import { excluirConta } from "../../services/perfilService";
 import { listarMinhasCertificacoes, removerCertificacao as removerCertificacaoService } from "../../services/certificacaoService";
+import { listarEmpresa } from "../../services/empresaService";
+import { listarEspecialidade } from "../../services/especialidadeService";
 
 export default function Profile(){
     const [perfil, setPerfil] = useState({nome: "", email: "", senha: "", tipo: ""});
@@ -21,6 +23,8 @@ export default function Profile(){
     const [isOpen, setIsOpen] = useState(false);
     const navigate = useNavigate();
     const [certificacoes, setCertificacoes] = useState([]);
+    const [empresa, setEmpresa] = useState(null);
+    const [especialidade, setEspecialidade] = useState([]);
 
     useEffect(() => {
         async function carregarPerfil(){
@@ -33,6 +37,14 @@ export default function Profile(){
                     const certs = await listarMinhasCertificacoes();
                     console.log("Certificações recebidas:", certs);
                     setCertificacoes(certs || []);
+                }
+                if (data.tipo === "CLIENTE"){
+                    const empresa = await listarEmpresa();
+                    setEmpresa(empresa);
+                }
+                if (data.tipo === "COLABORADOR"){
+                    const especialidade = await listarEspecialidade();
+                    setEspecialidade(especialidade || []);
                 }
             } catch (error) {
                 console.log("Erro ao carregar o perfil", error);
@@ -206,6 +218,41 @@ export default function Profile(){
                                                     <button onClick={() => handleRemover(cert.id)} className="text-red-400 hover:text-red-500 text-sm">
                                                         Remover
                                                     </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
+                            {/* LADO DIREITO: EMPRESA DO CLIENTE */}
+                            {perfil?.tipo === "CLIENTE" && empresa && (
+                                <div>
+                                    <h2 className="text-white text-lg font-semibold mb-3 text-center">Empresa</h2>
+
+                                    <div className="flex justify-center">
+                                        <div className="flex items-center justify-center w-[340px] bg-[#141B2D] px-5 py-3 rounded-xl border border-[#1F2937]">
+                                            <div className="flex flex-col justify-center">
+                                                <p className="text-white text-sm font-semibold">{empresa.nome}</p>
+                                                <p className="text-slate-400 text-xs">{empresa.cnpj}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* LADO DIREITO: EESPECIALIDADES DO COLABORADOR */}
+                            {perfil?.tipo === "COLABORADOR" && (
+                                <div>
+                                    <h2 className="text-white text-lg font-semibold mb-3 text-center">Especialidades</h2>
+
+                                    {especialidade.length === 0 ? (
+                                        <p className="text-slate-400 text-center">Nenhuma especialidade cadastrada.</p>
+                                    ) : (
+                                        <div className="flex flex-col gap-2 items-center">
+                                            {especialidade.map((esp) => (
+                                                <div key={esp.id} className="w-[340px] bg-[#141B2D] px-5 py-3 rounded-xl border border-[#1F2937]">
+                                                    <span className="text-white text-sm font-semibold">{esp.nomeEspecialidade}</span>
                                                 </div>
                                             ))}
                                         </div>
