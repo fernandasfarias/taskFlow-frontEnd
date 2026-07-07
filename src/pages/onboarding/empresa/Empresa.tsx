@@ -33,7 +33,7 @@ export default function CadastroEmpresa() {
       // O CNPJ já vai chegar formatado aqui
       const dadosEnviar = { nome: dados.nomeEmpresa, cnpj: dados.cnpj };
 
-      const response = await fetch("http://localhost:8080/onboarding/empresa", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/onboarding/empresa`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -74,7 +74,7 @@ export default function Especialidades() {
         nomeEspecialidade: nome
       }));
 
-      const response = await fetch("http://localhost:8080/onboarding/especialidades", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/onboarding/especialidades`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

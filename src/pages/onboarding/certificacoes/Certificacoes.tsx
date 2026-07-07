@@ -6,10 +6,15 @@ import { FiArrowLeft } from "react-icons/fi";
 
 const IMG_LOGO_ROXA = "/Frame2.png"; 
 
+import { useLocation } from "react-router-dom";
+
 export default function CadastroCertificacoes() {
   const navigate = useNavigate();
   
   const { register, handleSubmit, reset, formState: { errors } } = useForm();
+
+  const location = useLocation();
+  const origem = location.state?.origem;
 
   const adicionarCertificacao = async (dados: any) => {
     const token = localStorage.getItem("token");
@@ -27,7 +32,7 @@ export default function CadastroCertificacoes() {
         urlComprovante: dados.urlComprovante
       }];
 
-      const response = await fetch("http://localhost:8080/onboarding/certificacoes", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/onboarding/certificacoes`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -47,15 +52,24 @@ export default function CadastroCertificacoes() {
     }
   };
 
-  const irParaDashboard = () => {
-    navigate('/dashboard');
-  };
-
-  const voltarParaCadastro = () => {
-    navigate(-1); 
-  };
 
   const inputEstilo = "w-full placeholder-[#98928A] bg-transparent text-base md:text-xl py-6 px-8 rounded-2xl border-[2px] border-solid border-[#30363D] focus:border-[#7C3AED] focus:outline-none transition-colors font-normal text-white";
+
+  const irParaProximaTela = () => {
+    if(origem === "profile"){
+      navigate("/profile");
+    }else{
+      navigate("/dashboard");
+    }
+  };
+
+  const voltarTelaAnterior = () => {
+    if(origem === "profile"){
+      navigate("/profile");
+    }else{
+      navigate("/")
+    }
+  }
 
   return (
     <div className="min-h-screen bg-[#0A0E17] flex items-end md:items-center justify-center md:p-6 font-sans overflow-hidden relative">
@@ -68,7 +82,7 @@ export default function CadastroCertificacoes() {
         
         {/* BOTÃO DE VOLTAR */}
         <button 
-          onClick={voltarParaCadastro}
+          onClick={voltarTelaAnterior}
           className="absolute top-6 left-6 md:top-10 md:left-10 p-3 text-[#98928A] hover:text-white hover:bg-gray-800 rounded-full transition-all duration-300 z-50 flex items-center justify-center"
           title="Voltar"
         >
@@ -129,7 +143,7 @@ export default function CadastroCertificacoes() {
                   Adicionar
                 </button>
 
-                <button type="button" onClick={irParaDashboard} className="flex-1 bg-transparent hover:bg-gray-800 text-white border border-gray-700 text-lg font-bold py-4 rounded-2xl md:rounded-3xl transition duration-300">
+                <button type="button" onClick={irParaProximaTela} className="flex-1 bg-transparent hover:bg-gray-800 text-white border border-gray-700 text-lg font-bold py-4 rounded-2xl md:rounded-3xl transition duration-300">
                   Finalizar
                 </button>
               </div>
