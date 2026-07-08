@@ -565,7 +565,7 @@ export default function Kanban() {
               <div className="bg-[#22272E] rounded-xl p-5">
                 <p className="text-gray-400 text-sm">Status</p>
                 <span className="inline-flex mt-2 bg-purple-600 text-white px-4 py-1 rounded-full text-sm">
-                  {atividadeDetalhe.statusAtividade}
+                  {formatarStatus(atividadeDetalhe.statusAtividade)}
                 </span>
               </div>
               <div className="bg-[#22272E] rounded-xl p-5">

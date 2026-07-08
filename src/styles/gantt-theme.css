@@ -1,0 +1,52 @@
+/* fundo geral */
+.gantt_container {
+  background: #0B1220 !important;
+}
+
+/* grid esquerda */
+.gantt_grid_data {
+  background: #0B1220 !important;
+  color: #E5E7EB !important;
+}
+
+/* header */
+.gantt_grid_scale,
+.gantt_task_scale {
+  background: #141B2D !important;
+  color: #9CA3AF !important;
+}
+
+/* linhas da tabela */
+.gantt_row,
+.gantt_task_row {
+  background: #0B1220 !important;
+  border-bottom: 1px solid #1F2937 !important;
+}
+
+/* barra principal */
+.gantt_task_line {
+  background: #7C3AED !important; 
+  border: 1px solid #5B21B6 !important;
+  border-radius: 6px !important;
+}
+
+/* progresso */
+.gantt_task_progress {
+  background: #C084FC !important; 
+}
+
+/* texto dentro da barra */
+.gantt_task_content {
+  color: #E5E7EB !important;
+  font-weight: 500;
+}
+
+/* hover */
+.gantt_task_line:hover {
+  filter: brightness(1.15);
+}
+
+/* hoje */
+.gantt_task_cell.today {
+  background: rgba(124, 58, 237, 0.1) !important;
+}

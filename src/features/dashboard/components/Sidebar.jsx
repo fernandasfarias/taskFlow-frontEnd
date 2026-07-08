@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { HiOutlineHome, HiOutlineFolder, HiOutlineCalendar, HiOutlineClipboardList, HiOutlineChatAlt2, HiOutlineChartBar, HiOutlineAdjustments, HiMenu, HiX } from 'react-icons/hi';
+import { 
+  HiOutlineHome, 
+  HiOutlineFolder, 
+  HiOutlineCalendar, 
+  HiOutlineClipboardList, 
+  HiOutlineChatAlt2, 
+  HiOutlineBookOpen, 
+  HiMenu, 
+  HiX 
+} from 'react-icons/hi';
 import { MdKeyboardArrowDown } from 'react-icons/md';
 import logoImg from '../../../assets/Frame2.png';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -22,19 +31,20 @@ export default function Sidebar({ user, isOpen, setIsOpen }) {
     carregarPerfil();
   }, []);
 
+  // Atualizamos os botões da Sidebar aqui
   const menuItems = [
     { name: 'Home', path: '/dashboard', icon: <HiOutlineHome size={20} /> },
     { name: 'Projetos', path: '/projetos', icon: <HiOutlineFolder size={20} /> },
-    { name: 'Cronograma', path: '/cronograma', icon: <HiOutlineCalendar size={20} /> },
-    { name: 'Kanban', path: '/kanban', icon: <HiOutlineClipboardList size={20} /> },
     { name: 'Chat', path: '/chat', icon: <HiOutlineChatAlt2 size={20} /> },
-    { name: 'Relatórios', path: '/relatorios', icon: <HiOutlineChartBar size={20} /> },
-    { name: 'Configurações', path: '/configuracoes', icon: <HiOutlineAdjustments size={20} /> },
+    { name: 'Tutorial', url: 'https://github.com/fernandasfarias/taskFlow-frontEnd/blob/main/README.md', icon: <HiOutlineBookOpen size={20} /> },
   ];
 
-  const handleNavigation = (path) => {
-    navigate(path);
-    // Fecha a sidebar no mobile após o clique
+  const handleNavigation = (item) => {
+    if(item.url){
+      window.open(item.url, "_blank");  
+    } else {
+      navigate(item.path);
+    }
     setIsOpen(false);
   };
 
@@ -76,27 +86,38 @@ export default function Sidebar({ user, isOpen, setIsOpen }) {
 
           {/* Menu */}
           <nav className="space-y-2">
-            {menuItems.map((item, index) => (
-              <button
-                key={index}
-                onClick={() => handleNavigation(item.path)}
-                className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 font-medium ${
-                  location.pathname === item.path 
-                    ? 'bg-gradient-to-r from-[#6366f1] to-[#a855f7] text-white shadow-lg shadow-[#6366f1]/20' 
-                    : 'hover:bg-[#1e293b] hover:text-white'
-                }`}
-              >
-                {item.icon}
-                <span>{item.name}</span>
-              </button>
-            ))}
+            {menuItems.map((item, index) => {
+              // Verifica se o item é o Chat e se o usuário é Colaborador
+              const isChat = item.name === 'Chat';
+              const isColaborador = perfil?.tipo === "COLABORADOR";
+              const isChatDisabled = isChat && isColaborador;
+
+              return (
+                <button
+                  key={index}
+                  onClick={() => !isChatDisabled && handleNavigation(item)}
+                  disabled={isChatDisabled}
+                  className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 font-medium ${
+                    location.pathname === item.path 
+                      ? 'bg-gradient-to-r from-[#6366f1] to-[#a855f7] text-white shadow-lg shadow-[#6366f1]/20' 
+                      : 'hover:bg-[#1e293b] hover:text-white'
+                  } ${
+                    isChatDisabled ? 'opacity-40 cursor-not-allowed hover:bg-transparent hover:text-[#94a3b8]' : ''
+                  }`}
+                  title={isChatDisabled ? 'Acesso restrito para colaboradores' : ''}
+                >
+                  {item.icon}
+                  <span>{item.name}</span>
+                </button>
+              );
+            })}
           </nav>
         </div>
 
         {/* Perfil */}
         <div
             onClick={() => handleNavigation('/profile')}
-            className="flex items-center justify-between p-2 rounded-xl bg-[#141b2d] border border-[#1e293b] cursor-pointer">
+            className="flex items-center justify-between p-2 rounded-xl bg-[#141b2d] border border-[#1e293b] cursor-pointer hover:border-[#6366f1] transition-colors">
           <div className="flex items-center gap-3">
             <img 
               src={fotoPerfil} 
@@ -110,7 +131,7 @@ export default function Sidebar({ user, isOpen, setIsOpen }) {
               </span>
             </div>
           </div>
-          <MdKeyboardArrowDown className="cursor-pointer hover:text-white" size={20} />
+          <MdKeyboardArrowDown className="cursor-pointer text-gray-400 hover:text-white" size={20} />
         </div>
       </aside>
     </>

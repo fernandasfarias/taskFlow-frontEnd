@@ -27,6 +27,8 @@ import AssociarColaboradoresAtividade from './pages/atividade/AssociarColaborado
 import AssociarColaboradoresTarefa from './pages/tarefa/AssociarColaboradoresTarefa';
 import CriarTarefa from './pages/tarefa/CriarTarefa';
 
+import CronogramaProjeto from './pages/Projetos/CronogramaProjeto';
+
 export default function App() {
   return (
     <Routes>
@@ -60,9 +62,12 @@ export default function App() {
       
       {/* Rota do Kanban */}
       <Route path="/kanban" element={<Kanban />} />
+
+      {/* rota do cronograma */}
+      <Route path="/projetos/:id/cronograma" element={<CronogramaProjeto />} />
       
       {/* Rotas específicas de ação dentro do projeto */}
-      <Route path="/projetos/:id/chat" element={<ChatProjeto />} />
+      <Route path="/chat/:idProjeto" element={<ConversaPage />} />  
       <Route path="/projetos/:idProjeto/nova-atividade" element={<CriarAtividade />} />
       <Route path="/projetos/:idProjeto/atividade/:idAtividade/nova-tarefa" element={<CriarTarefa />} />
       <Route path="/projetos/:idProjeto/kanban" element={<Kanban />} />

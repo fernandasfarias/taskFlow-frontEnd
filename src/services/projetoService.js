@@ -46,6 +46,24 @@ export async function listarTodosClientes(){
     return response.data;
 }
 
+export async function getStats(){
+    const response = await api.get("/projetos/stats");
+    return response.data;
+}
+
+export async function getUserProfile() {
+    const response = await api.get("/projetos/user");
+    return response.data;
+}
+
+export async function searchProjects(termo) {
+    const response = await api.get("/projetos/projects", {
+      params: { search: termo },
+    });
+
+    return response.data;
+}
+
 export const buscarUsuarioPorEMail = (email) =>
     api.get("projetos/usuarios/email", {
         params: { email }
