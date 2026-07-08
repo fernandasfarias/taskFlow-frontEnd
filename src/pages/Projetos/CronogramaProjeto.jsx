@@ -27,12 +27,12 @@ export default function CronogramaProjeto() {
                 setLoading(true);
                 
                 const atividades = await listarAtividadesProjeto(id);
+                console.log("ATIVIDADES:", atividades);
                 const tasks = [];
 
                 for (const atividade of atividades) {
-                    const tarefas = await listarTarefasAtividade(atividade.idAtividade);
                     const milestones = await listarMilestone(atividade.idAtividade);
-                    const atividadeId = `atividade-${atividade.idAtividade}`;
+                    console.log("MILESTONES:", milestones);
 
                     // responsividade
                     const isMobile = window.innerWidth < 768;
@@ -45,10 +45,8 @@ export default function CronogramaProjeto() {
                     gantt.config.start_date = null;
                     gantt.config.end_date = null;
 
-                    for (const atividade of atividades) {
-                        const tarefas = await listarTarefasAtividade(
-                            atividade.idAtividade
-                        );
+                        const tarefas = await listarTarefasAtividade(atividade.idAtividade);
+                        console.log("TAREFAS:", tarefas);
 
                         const atividadeId = `atividade-${atividade.idAtividade}`;
 
@@ -93,14 +91,17 @@ export default function CronogramaProjeto() {
                                 parent: atividadeId,
                             });
                         });
-                    }
                 }
 
                 gantt.config.date_format = "%Y-%m-%d";
 
-                gantt.clearAll();
-                gantt.init(ganttRef.current);
-                gantt.parse({ data: tasks });
+                if (ganttRef.current) {
+                    gantt.clearAll();
+                    gantt.init(ganttRef.current);
+                    gantt.parse({ data: tasks });
+
+                    console.log("TASKS DO GANTT:", tasks);
+                }
 
             } catch (err) {
                 console.error("Erro ao carregar cronograma:", err);
@@ -151,17 +152,13 @@ export default function CronogramaProjeto() {
             {/* card do gantt */}
             <div className="bg-[#0B1220] rounded-2xl sm:rounded-[28px] border border-[#1F2937]/60 p-3 sm:p-6 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.6)] min-h-[500px] sm:min-h-[650px]">
 
-                {loading ? (
+                <div ref={ganttRef} className="w-full overflow-x-auto h-[400px] sm:h-[600px] touch-pan-x"/>
+
+                {loading && (
                     <div className="text-slate-400 text-center py-20">
                         Carregando o cronograma...
                     </div>
-                ) : (
-                    <div
-                        ref={ganttRef}
-                        className="w-full overflow-x-auto h-[400px] sm:h-[600px] touch-pan-x"
-                    />
                 )}
-
             </div>
         </div>
     );
