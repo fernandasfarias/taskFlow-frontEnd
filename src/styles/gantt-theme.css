@@ -50,3 +50,46 @@
 .gantt_task_cell.today {
   background: rgba(124, 58, 237, 0.1) !important;
 }
+
+/* ---------- Atividades (azul) ---------- */
+.gantt_project {
+  background: #2563EB !important;
+  border: 1px solid #1D4ED8 !important;
+  border-radius: 6px !important;
+}
+
+.gantt_project .gantt_task_progress {
+  background: #60A5FA !important;
+}
+
+/* ---------- Tarefas (roxo) ---------- */
+.gantt_task_line:not(.gantt_project):not(.gantt_milestone) {
+  background: #7C3AED !important;
+  border: 1px solid #5B21B6 !important;
+  border-radius: 6px !important;
+}
+
+.gantt_task_line:not(.gantt_project):not(.gantt_milestone) .gantt_task_progress {
+  background: #C084FC !important;
+}
+
+/* ---------- Milestones (dourado) ---------- */
+.gantt_milestone {
+  background: #F59E0B !important;
+  border-color: #D97706 !important;
+}
+
+.gantt_milestone .gantt_task_content {
+  color: #F59E0B !important;
+}
+
+/* ---------- Texto ---------- */
+.gantt_task_content {
+  color: #E5E7EB !important;
+  font-weight: 500;
+}
+
+/* ---------- Hover ---------- */
+.gantt_task_line:hover {
+  filter: brightness(1.15);
+}

@@ -5,6 +5,7 @@ import gantt from "dhtmlx-gantt";
 
 import { listarAtividadesProjeto } from "../../services/atividadeService";
 import { listarTarefasAtividade } from "../../services/tarefaService";
+import { listarMilestone } from "../../services/milestoneService";
 
 import { ArrowLeft, CalendarDays } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -24,60 +25,75 @@ export default function CronogramaProjeto() {
                 if (!id) return;
 
                 setLoading(true);
-
+                
                 const atividades = await listarAtividadesProjeto(id);
-
                 const tasks = [];
 
-                const isMobile = window.innerWidth < 768;
-
-                if (isMobile){
-                    gantt.config.show_grid = false;
-                }
-
-                gantt.config.bar_height = isMobile ? 18 : 28;
-                gantt.config.row_height = isMobile ? 30 : 40;
-                gantt.config.scale_height = 50;
-                gantt.config.start_date = null;
-                gantt.config.end_date = null;
-
                 for (const atividade of atividades) {
-                    const tarefas = await listarTarefasAtividade(
-                        atividade.idAtividade
-                    );
-
+                    const tarefas = await listarTarefasAtividade(atividade.idAtividade);
+                    const milestones = await listarMilestone(atividade.idAtividade);
                     const atividadeId = `atividade-${atividade.idAtividade}`;
 
-                    // atividade pai
-                    tasks.push({
-                        id: atividadeId,
-                        text: `${atividade.nomeAtividade}`,
-                        start_date:
-                            atividade.dataInicio || new Date(),
-                        duration: 1,
-                        type: "project",
-                        open: true,
-                    });
+                    // responsividade
+                    const isMobile = window.innerWidth < 768;
+                    if (isMobile){
+                        gantt.config.show_grid = false;
+                    }
+                    gantt.config.bar_height = isMobile ? 18 : 28;
+                    gantt.config.row_height = isMobile ? 30 : 40;
+                    gantt.config.scale_height = 50;
+                    gantt.config.start_date = null;
+                    gantt.config.end_date = null;
 
-                    // tarefas filhas
-                    tarefas.forEach((tarefa) => {
+                    for (const atividade of atividades) {
+                        const tarefas = await listarTarefasAtividade(
+                            atividade.idAtividade
+                        );
+
+                        const atividadeId = `atividade-${atividade.idAtividade}`;
+
+                        // atividade pai
                         tasks.push({
-                            id: tarefa.idTarefa,
-                            text: `└─ ${tarefa.nomeTarefa}`,
-                            start_date: tarefa.dataInicio,
-                            duration: calcularDuracao(
-                                tarefa.dataInicio,
-                                tarefa.dataEntrega
-                            ),
-                            parent: atividadeId,
-                            progress:
-                                tarefa.statusTarefa === "CONCLUIDA"
-                                    ? 1
-                                    : tarefa.statusTarefa === "EM_ANDAMENTO"
-                                    ? 0.5
-                                    : 0,
+                            id: atividadeId,
+                            text: `${atividade.nomeAtividade}`,
+                            start_date:
+                                atividade.dataInicio || new Date(),
+                            duration: 1,
+                            type: "project",
+                            open: true,
                         });
-                    });
+
+                        // tarefas filhas
+                        tarefas.forEach((tarefa) => {
+                            tasks.push({
+                                id: tarefa.idTarefa,
+                                text: `└─ ${tarefa.nomeTarefa}`,
+                                start_date: tarefa.dataInicio,
+                                duration: calcularDuracao(
+                                    tarefa.dataInicio,
+                                    tarefa.dataEntrega
+                                ),
+                                parent: atividadeId,
+                                progress:
+                                    tarefa.statusTarefa === "CONCLUIDA"
+                                        ? 1
+                                        : tarefa.statusTarefa === "EM_ANDAMENTO"
+                                        ? 0.5
+                                        : 0,
+                            })
+                        });
+
+                        // milestone da atividade
+                        milestones.forEach((milestone) => {
+                            tasks.push({
+                                id: `milestone-${milestone.idMilestone}`,
+                                text: `◆ ${milestone.nomeMilestone}`,
+                                start_date: milestone.dataPrevista,
+                                type: "milestone",
+                                parent: atividadeId,
+                            });
+                        });
+                    }
                 }
 
                 gantt.config.date_format = "%Y-%m-%d";

@@ -361,7 +361,7 @@ export default function Kanban() {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:8080/milestones/${milestoneAtividade.idMilestone}`,
+        `${import.meta.env.VITE_API_URL}/milestones/${milestoneAtividade.idMilestone}`,
         {
           method: "DELETE",
           headers: {
@@ -384,7 +384,7 @@ export default function Kanban() {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:8080/etapas/${idEtapa}/toggle`,
+        `${import.meta.env.VITE_API_URL}/etapas/${idEtapa}/toggle`,
         {
           method: "PATCH",
           headers: {
