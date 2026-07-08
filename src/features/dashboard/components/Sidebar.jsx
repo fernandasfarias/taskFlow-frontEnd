@@ -116,7 +116,9 @@ export default function Sidebar({ user, isOpen, setIsOpen }) {
 
         {/* Perfil */}
         <div
-            onClick={() => handleNavigation('/profile')}
+            onClick={() => {navigate('/profile');
+              setIsOpen(false);}
+            }
             className="flex items-center justify-between p-2 rounded-xl bg-[#141b2d] border border-[#1e293b] cursor-pointer hover:border-[#6366f1] transition-colors">
           <div className="flex items-center gap-3">
             <img 
