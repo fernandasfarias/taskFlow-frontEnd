@@ -9,6 +9,8 @@ import {
 } from "../../services/atividadeService";
 import { excluirTarefa } from "../../services/tarefaService";
 
+import {getPerfil} from "../../services/perfilService";
+
 const colunasBase = [
   {
     id: "PENDENTE",
@@ -50,6 +52,9 @@ const colunasBase = [
 
 export default function Kanban() {
   const navigate = useNavigate();
+
+  const [perfil, setPerfil] = useState<any>(null);
+
   const { idProjeto } = useParams();
   const [colunas, setColunas] = useState<any[]>(colunasBase);
   const [loading, setLoading] = useState(false);
@@ -89,7 +94,17 @@ export default function Kanban() {
 
   useEffect(() => {
     carregarKanban();
+    carregarPerfil();
   }, [idProjeto]);
+
+  async function carregarPerfil(){
+    try{
+      const data = await getPerfil();
+      setPerfil(data);
+    } catch (error){
+      console.log("erro ao carregar o perfil: ", error);
+    }
+  }
 
   async function carregarKanban() {
     if (!idProjeto) return;
@@ -314,7 +329,7 @@ export default function Kanban() {
       // Se já existir um ID, significa que estamos EDITANDO o milestone inteiro
       if (milestoneAtividade && milestoneAtividade.idMilestone) {
         response = await fetch(
-          `http://localhost:8080/milestones/${milestoneAtividade.idMilestone}`,
+          `${import.meta.env.VITE_API_URL}/milestones/${milestoneAtividade.idMilestone}`,
           {
             method: "PUT",
             headers: {
@@ -327,7 +342,7 @@ export default function Kanban() {
       } else {
         // Se não tiver ID, é uma CRIAÇÃO nova vinculada à atividade
         response = await fetch(
-          `http://localhost:8080/milestones/atividade/${atividadeDetalhe.idAtividade}`,
+          `${import.meta.env.VITE_API_URL}/milestones/atividade/${atividadeDetalhe.idAtividade}`,
           {
             method: "POST",
             headers: {
@@ -401,6 +416,8 @@ export default function Kanban() {
       console.error("Erro ao alterar status da etapa:", error);
     }
   };
+
+  const podeEditar = perfil?.tipo === "PROJECT_MANAGER";
 
   // ======================================================================
 
@@ -494,7 +511,20 @@ export default function Kanban() {
                               >
                                 Detalhes
                               </button>
-                              <button
+                              {podeEditar && (
+                                <>
+                                  <button
+                                    onClick={() => {
+                                      navigate(
+                                        `/projetos/${idProjeto}/atividades/${tarefa.id}/editar`,
+                                      );
+                                    }}
+                                    className="w-full text-left px-4 py-3 text-yellow-400 hover:bg-[#161B22]">
+                                    Alterar
+                                  </button>
+                                </>
+                              )}
+                              {/*<button
                                 onClick={() => {
                                   navigate(
                                     `/projetos/${idProjeto}/atividades/${tarefa.id}/editar`,
@@ -503,8 +533,20 @@ export default function Kanban() {
                                 className="w-full text-left px-4 py-3 text-yellow-400 hover:bg-[#161B22]"
                               >
                                 Alterar
-                              </button>
-                              <button
+                              </button>*/}
+                              {podeEditar && (
+                                <>
+                                  <button
+                                    onClick={() => {
+                                      excluirAtividade(tarefa.id, coluna.id);
+                                      setMenuTarefaAbertoId(null);
+                                    }}
+                                    className="w-full text-left px-4 py-3 text-red-400 hover:bg-[#161B22]">
+                                    Excluir
+                                  </button>
+                                </>
+                              )}
+                              {/*<button
                                 onClick={() => {
                                   excluirAtividade(tarefa.id, coluna.id);
                                   setMenuTarefaAbertoId(null);
@@ -512,7 +554,7 @@ export default function Kanban() {
                                 className="w-full text-left px-4 py-3 text-red-400 hover:bg-[#161B22]"
                               >
                                 Excluir
-                              </button>
+                              </button>*/}
                             </div>
                           )}
                         </div>
@@ -582,9 +624,23 @@ export default function Kanban() {
               </div>
             </div>
 
-            {/* Botões */}
             <div className="px-8 pb-8 flex gap-4">
-              <button
+              {/* Botões */}
+              {podeEditar && (
+                <>
+                  <button
+                    onClick={() =>
+                      navigate(
+                        `/projetos/${idProjeto}/atividade/${atividadeDetalhe.idAtividade}/nova-tarefa`,
+                      )
+                    }
+                    className="bg-gradient-to-r from-[#6366f1] to-[#a855f7] text-white px-6 py-3 rounded-xl font-medium transition hover:opacity-90 shadow-md shadow-[#6366f1]/20"
+                  >
+                    + Criar Tarefa
+                  </button>
+                </>
+              )}
+              {/*<button
                 onClick={() =>
                   navigate(
                     `/projetos/${idProjeto}/atividade/${atividadeDetalhe.idAtividade}/nova-tarefa`,
@@ -593,15 +649,18 @@ export default function Kanban() {
                 className="bg-gradient-to-r from-[#6366f1] to-[#a855f7] text-white px-6 py-3 rounded-xl font-medium transition hover:opacity-90 shadow-md shadow-[#6366f1]/20"
               >
                 + Criar Tarefa
-              </button>
-              {!milestoneAtividade && (
-                <button
-                  onClick={() => setCriandoMilestone(true)}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-medium transition"
-                >
-                  + Criar Milestone
-                </button>
-              )}
+              </button>*/}
+              {podeEditar && (
+                <>
+                  {!milestoneAtividade && (
+                    <button
+                      onClick={() => setCriandoMilestone(true)}
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-medium transition">
+                      + Criar Milestone
+                    </button>
+                  )}
+                </>
+                )}
             </div>
 
             {/* Seção do Milestone */}
@@ -680,6 +739,7 @@ export default function Kanban() {
                     >
                       Editar
                     </button>
+
                     <button
                       onClick={abrirModalExcluirEtapa}
                       disabled={etapaSelecionadaIndex === null}
@@ -907,7 +967,18 @@ export default function Kanban() {
                         </p>
                       </div>
                       <div className="flex gap-3">
-                        <button
+                        {podeEditar && (
+                          <button
+                            onClick={() =>
+                              navigate(
+                                `/projetos/${idProjeto}/atividade/${atividadeDetalhe.idAtividade}/tarefas/${tarefa.idTarefa}/editar`,
+                              )
+                            }
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition">
+                            Editar
+                          </button>
+                        )}
+                        {/*<button
                           onClick={() =>
                             navigate(
                               `/projetos/${idProjeto}/atividade/${atividadeDetalhe.idAtividade}/tarefas/${tarefa.idTarefa}/editar`,
@@ -916,13 +987,14 @@ export default function Kanban() {
                           className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition"
                         >
                           Editar
-                        </button>
-                        <button
+                        </button>*/}
+                        {podeEditar && (
+                            <button
                           onClick={() => handleExcluir(tarefa.idTarefa)}
-                          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition"
-                        >
+                          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition">
                           Excluir tarefa
-                        </button>
+                          </button>
+                        )}
                       </div>
                     </div>
                   ))}
