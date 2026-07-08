@@ -137,7 +137,7 @@ export default function CriarAtividade() {
               className="w-full bg-[#0f172a] border border-[#334155] rounded-lg px-4 py-3 text-sm outline-none resize-none focus:border-[#8b5cf6]"
             />
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <input
                 type="date"
                 name="dataInicio"
