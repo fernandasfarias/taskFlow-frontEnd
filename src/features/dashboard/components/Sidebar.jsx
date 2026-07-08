@@ -36,7 +36,7 @@ export default function Sidebar({ user, isOpen, setIsOpen }) {
     { name: 'Home', path: '/dashboard', icon: <HiOutlineHome size={20} /> },
     { name: 'Projetos', path: '/projetos', icon: <HiOutlineFolder size={20} /> },
     { name: 'Chat', path: '/chat', icon: <HiOutlineChatAlt2 size={20} /> },
-    { name: 'Tutorial', url: 'https://github.com/fernandasfarias/taskFlow-frontEnd/blob/main/README.md', icon: <HiOutlineBookOpen size={20} /> },
+    { name: 'Tutorial', url: 'https://taskflow-tutorial.vercel.app/', icon: <HiOutlineBookOpen size={20} /> },
   ];
 
   const handleNavigation = (item) => {
