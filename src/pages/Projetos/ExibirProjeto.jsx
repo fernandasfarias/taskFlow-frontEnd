@@ -282,10 +282,22 @@ export default function ExibirProjeto() {
                             Cronograma
                         </button>
                         <button
-                            onClick={() => navigate(`/chat/${id}`)}
-                            className="flex items-center justify-center gap-2 px-4 py-3 bg-[#141b2d] border border-[#1e293b] rounded-xl text-sm font-semibold text-white hover:bg-[#1e293b] hover:border-[#3b82f6]/50 transition-all shadow-sm"
-                        >
-                            <HiOutlineChat size={18} className="text-[#3b82f6]" />
+                            onClick={() => {
+                                if (user.role !== "COLABORADOR") {
+                                    navigate(`/chat/${id}`);
+                                }
+                            }}
+                            disabled={user.role === "COLABORADOR"}
+                            className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold transition-all shadow-sm
+                                ${
+                                    user.role === "COLABORADOR"
+                                        ? "bg-gray-600 border border-gray-500 text-gray-300 cursor-not-allowed opacity-70"
+                                        : "bg-[#141b2d] border border-[#1e293b] text-white hover:bg-[#1e293b] hover:border-[#3b82f6]/50"
+                                }`}>
+                            <HiOutlineChat
+                                size={18}
+                                className={user.role === "COLABORADOR" ? "text-gray-400" : "text-[#3b82f6]"}
+                            />
                             Chat
                         </button>
                         
