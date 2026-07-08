@@ -195,7 +195,7 @@ export default function DashBoardPage() {
               {busca ? "Nenhum projeto encontrado." : "Nenhum projeto ainda."}
             </p>
 
-            {!busca && (
+            {!busca && user.role === 'PROJECT_MANAGER' && (
               <button
                 onClick={() => navigate("/projetos/novo")}
                 className="mt-4 text-sm text-[#6366f1] hover:underline"
