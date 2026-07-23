@@ -99,7 +99,7 @@ function FormularioLogin({ aoClicarCadastrar }: FormProps) {
       <p className="text-[#98928A] text-base md:text-lg lg:text-xl mb-8 md:mb-10 font-normal">Faça login para continuar.</p>
 
       <form onSubmit={handleSubmit(enviarFormulario)} className="w-full flex flex-col gap-4 text-white">
-        <Input placeholder="Seu email" type="email" name="email" register={register} errors={errors} />
+        <Input placeholder="Seu email" type="email" name="email" register={register} errors={errors}/>
         <Input placeholder="Sua senha" type="password" name="senha" register={register} errors={errors} />
         <div className="flex justify-end w-full">
           <Link to="/recuperar-senha" className="text-sm text-[#98928A] hover:text-[#A78BFA] transition-colors mt-1">Esqueci minha senha</Link>
@@ -154,7 +154,13 @@ function FormularioCadastro({ aoClicarLogin }: FormProps) {
         
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1">
-            <Input placeholder="Sua senha" type="password" name="senha" register={register} errors={errors} />
+            <Input placeholder="Sua senha" type="password" name="senha" register={register} errors={errors} regras={{
+            required: "Obrigatório!",
+            minLength: {
+              value: 8,
+              message: "A senha deve ter no mínimo 8 caracteres!"
+            }
+          }}/>
           </div>
           <div className="flex-1">
             <Input placeholder="Confirma sua senha" type="password" name="confirmarSenha" register={register} errors={errors} regras={{ required: "Obrigatório!", validate: (valor: string) => valor === senhaDigitada || "As senhas não batem!" }} />

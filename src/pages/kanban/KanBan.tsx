@@ -9,7 +9,7 @@ import {
 } from "../../services/atividadeService";
 import { excluirTarefa } from "../../services/tarefaService";
 
-import {getPerfil} from "../../services/perfilService";
+import { getPerfil } from "../../services/perfilService";
 
 const colunasBase = [
   {
@@ -77,31 +77,19 @@ export default function Kanban() {
     descricao: "",
   });
 
-  const [etapasTemporarias, setEtapasTemporarias] = useState<string[]>([]);
-  const [novaEtapaInput, setNovaEtapaInput] = useState("");
-  const [mostrarInputEtapa, setMostrarInputEtapa] = useState(false);
   const [menuMilestoneAberto, setMenuMilestoneAberto] = useState(false);
-  const [etapaSelecionadaIndex, setEtapaSelecionadaIndex] = useState<
-    number | null
-  >(null);
-
-  // ESTADOS PARA OS MODAIS CUSTOMIZADOS
-  const [modalEditarEtapaAberto, setModalEditarEtapaAberto] = useState(false);
-  const [modalExcluirEtapaAberto, setModalExcluirEtapaAberto] = useState(false);
-  const [modalExcluirMilestoneAberto, setModalExcluirMilestoneAberto] =
-    useState(false);
-  const [nomeEtapaEditada, setNomeEtapaEditada] = useState("");
+  const [modalExcluirMilestoneAberto, setModalExcluirMilestoneAberto] = useState(false);
 
   useEffect(() => {
     carregarKanban();
     carregarPerfil();
   }, [idProjeto]);
 
-  async function carregarPerfil(){
-    try{
+  async function carregarPerfil() {
+    try {
       const data = await getPerfil();
       setPerfil(data);
-    } catch (error){
+    } catch (error) {
       console.log("erro ao carregar o perfil: ", error);
     }
   }
@@ -218,11 +206,7 @@ export default function Kanban() {
       setTarefasAtividade(response.tarefas);
       setMilestoneAtividade(response.milestone);
       setCriandoMilestone(false);
-      setMostrarInputEtapa(false);
       setMenuMilestoneAberto(false);
-      setEtapaSelecionadaIndex(null);
-      setModalEditarEtapaAberto(false);
-      setModalExcluirEtapaAberto(false);
       setModalExcluirMilestoneAberto(false);
       setModalDetalhesAberto(true);
     } catch (error) {
@@ -265,68 +249,19 @@ export default function Kanban() {
     setFormMilestone((prev) => ({ ...prev, [name]: value }));
   };
 
-  const adicionarEtapaTemporaria = () => {
-    if (novaEtapaInput.trim()) {
-      setEtapasTemporarias([...etapasTemporarias, novaEtapaInput.trim()]);
-      setNovaEtapaInput("");
-      setMostrarInputEtapa(false);
-      setEtapaSelecionadaIndex(null);
-    }
-  };
-
-  const abrirModalEditarEtapa = () => {
-    if (etapaSelecionadaIndex !== null) {
-      setNomeEtapaEditada(etapasTemporarias[etapaSelecionadaIndex]);
-      setModalEditarEtapaAberto(true);
-    }
-  };
-
-  const confirmarEdicaoEtapa = () => {
-    if (etapaSelecionadaIndex !== null && nomeEtapaEditada.trim() !== "") {
-      const novasEtapas = [...etapasTemporarias];
-      novasEtapas[etapaSelecionadaIndex] = nomeEtapaEditada.trim();
-      setEtapasTemporarias(novasEtapas);
-      setModalEditarEtapaAberto(false);
-      setEtapaSelecionadaIndex(null);
-    }
-  };
-
-  const abrirModalExcluirEtapa = () => {
-    if (etapaSelecionadaIndex !== null) {
-      setModalExcluirEtapaAberto(true);
-    }
-  };
-
-  const confirmarExclusaoEtapa = () => {
-    if (etapaSelecionadaIndex !== null) {
-      const novasEtapas = etapasTemporarias.filter(
-        (_, i) => i !== etapaSelecionadaIndex,
-      );
-      setEtapasTemporarias(novasEtapas);
-      setModalExcluirEtapaAberto(false);
-      setEtapaSelecionadaIndex(null);
-    }
-  };
-
-  // =============== INTEGRAÇÕES COM O BACK-END (MILESTONE) ===============
-
   const salvarNovoMilestone = async () => {
     try {
       const token = localStorage.getItem("token");
 
+      // Payload atualizado: sem etapas
       const payload = {
         nomeMilestone: formMilestone.nomeMilestone,
         descricao: formMilestone.descricao,
         dataPrevista: formMilestone.dataPrevista,
-        etapas: etapasTemporarias.map((nome) => ({
-          nomeEtapa: nome,
-          concluida: false,
-        })),
       };
 
       let response;
 
-      // Se já existir um ID, significa que estamos EDITANDO o milestone inteiro
       if (milestoneAtividade && milestoneAtividade.idMilestone) {
         response = await fetch(
           `${import.meta.env.VITE_API_URL}/milestones/${milestoneAtividade.idMilestone}`,
@@ -340,7 +275,6 @@ export default function Kanban() {
           },
         );
       } else {
-        // Se não tiver ID, é uma CRIAÇÃO nova vinculada à atividade
         response = await fetch(
           `${import.meta.env.VITE_API_URL}/milestones/atividade/${atividadeDetalhe.idAtividade}`,
           {
@@ -363,7 +297,6 @@ export default function Kanban() {
           dataPrevista: "",
           descricao: "",
         });
-        setEtapasTemporarias([]);
       } else {
         alert("Erro ao salvar o Milestone");
       }
@@ -394,32 +327,7 @@ export default function Kanban() {
     }
   };
 
-  // NOVA FUNÇÃO: Alternar Status da Etapa (Checkbox)
-  const alternarStatusEtapa = async (idEtapa: string) => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/etapas/${idEtapa}/toggle`,
-        {
-          method: "PATCH",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-
-      if (response.ok) {
-        const milestoneAtualizado = await response.json();
-        setMilestoneAtividade(milestoneAtualizado); // A tela e a barrinha atualizam sozinhas!
-      }
-    } catch (error) {
-      console.error("Erro ao alterar status da etapa:", error);
-    }
-  };
-
   const podeEditar = perfil?.tipo === "PROJECT_MANAGER";
-
-  // ======================================================================
 
   return (
     <>
@@ -524,16 +432,6 @@ export default function Kanban() {
                                   </button>
                                 </>
                               )}
-                              {/*<button
-                                onClick={() => {
-                                  navigate(
-                                    `/projetos/${idProjeto}/atividades/${tarefa.id}/editar`,
-                                  );
-                                }}
-                                className="w-full text-left px-4 py-3 text-yellow-400 hover:bg-[#161B22]"
-                              >
-                                Alterar
-                              </button>*/}
                               {podeEditar && (
                                 <>
                                   <button
@@ -546,15 +444,6 @@ export default function Kanban() {
                                   </button>
                                 </>
                               )}
-                              {/*<button
-                                onClick={() => {
-                                  excluirAtividade(tarefa.id, coluna.id);
-                                  setMenuTarefaAbertoId(null);
-                                }}
-                                className="w-full text-left px-4 py-3 text-red-400 hover:bg-[#161B22]"
-                              >
-                                Excluir
-                              </button>*/}
                             </div>
                           )}
                         </div>
@@ -640,16 +529,6 @@ export default function Kanban() {
                   </button>
                 </>
               )}
-              {/*<button
-                onClick={() =>
-                  navigate(
-                    `/projetos/${idProjeto}/atividade/${atividadeDetalhe.idAtividade}/nova-tarefa`,
-                  )
-                }
-                className="bg-gradient-to-r from-[#6366f1] to-[#a855f7] text-white px-6 py-3 rounded-xl font-medium transition hover:opacity-90 shadow-md shadow-[#6366f1]/20"
-              >
-                + Criar Tarefa
-              </button>*/}
               {podeEditar && (
                 <>
                   {!milestoneAtividade && (
@@ -660,7 +539,7 @@ export default function Kanban() {
                     </button>
                   )}
                 </>
-                )}
+              )}
             </div>
 
             {/* Seção do Milestone */}
@@ -669,7 +548,7 @@ export default function Kanban() {
                 Milestone
               </h3>
               {criandoMilestone ? (
-                // TELA 1: FORMULÁRIO DE CRIAÇÃO/EDIÇÃO
+                // TELA 1: FORMULÁRIO DE CRIAÇÃO/EDIÇÃO (LIMPO, SEM ETAPAS)
                 <div className="bg-[#161B22] rounded-2xl p-6 border border-[#30363D]">
                   <div className="flex flex-col md:flex-row gap-4 mb-4">
                     <input
@@ -696,108 +575,9 @@ export default function Kanban() {
                     className="bg-transparent border border-[#30363D] rounded-xl p-4 w-full text-white placeholder-gray-500 h-28 mb-4 focus:outline-none focus:border-purple-500 resize-none"
                   ></textarea>
 
-                  {/* Linha dos Botões de Ação das Etapas */}
-                  <div className="flex flex-wrap gap-3 mb-6">
-                    {!mostrarInputEtapa ? (
-                      <button
-                        onClick={() => {
-                          setMostrarInputEtapa(true);
-                          setEtapaSelecionadaIndex(null);
-                        }}
-                        className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white px-6 py-3 rounded-xl font-medium transition shadow-md"
-                      >
-                        + Adicionar Etapa
-                      </button>
-                    ) : (
-                      <input
-                        type="text"
-                        autoFocus
-                        value={novaEtapaInput}
-                        onChange={(e) => setNovaEtapaInput(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") adicionarEtapaTemporaria();
-                          if (e.key === "Escape") setMostrarInputEtapa(false);
-                        }}
-                        onBlur={() => {
-                          if (!novaEtapaInput.trim())
-                            setMostrarInputEtapa(false);
-                        }}
-                        placeholder="Pressione enter para adicionar (ou Esc para cancelar)..."
-                        className="bg-transparent border border-[#7C3AED] rounded-xl p-3 w-full md:w-1/3 text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[#7C3AED] shadow-sm"
-                      />
-                    )}
-
-                    {/* Botões (Editar e Excluir Etapa) AGORA COM O ROXO DO PROJETO */}
-                    <button
-                      onClick={abrirModalEditarEtapa}
-                      disabled={etapaSelecionadaIndex === null}
-                      className={`px-6 py-3 rounded-xl font-medium transition border ${
-                        etapaSelecionadaIndex !== null
-                          ? "border-[#7C3AED] text-[#7C3AED] hover:bg-[#7C3AED] hover:text-white cursor-pointer"
-                          : "border-[#30363D] text-gray-600 bg-transparent cursor-not-allowed"
-                      }`}
-                    >
-                      Editar
-                    </button>
-
-                    <button
-                      onClick={abrirModalExcluirEtapa}
-                      disabled={etapaSelecionadaIndex === null}
-                      className={`px-6 py-3 rounded-xl font-medium transition border ${
-                        etapaSelecionadaIndex !== null
-                          ? "border-red-500 text-red-500 hover:bg-red-500 hover:text-white cursor-pointer"
-                          : "border-[#30363D] text-gray-600 bg-transparent cursor-not-allowed"
-                      }`}
-                    >
-                      Excluir
-                    </button>
-                  </div>
-
-                  {/* Lista de Etapas Temporárias (Clicáveis) */}
-                  {etapasTemporarias.length > 0 && (
-                    <div className="flex flex-wrap gap-3 mb-8">
-                      {etapasTemporarias.map((etapa, idx) => (
-                        <div
-                          key={idx}
-                          onClick={() =>
-                            setEtapaSelecionadaIndex(
-                              etapaSelecionadaIndex === idx ? null : idx,
-                            )
-                          }
-                          className={`flex items-center gap-3 border rounded-full px-4 py-2 cursor-pointer transition-all ${
-                            etapaSelecionadaIndex === idx
-                              ? "border-[#7C3AED] bg-[#7C3AED]/10"
-                              : "border-[#30363D] bg-[#1B1F27] hover:border-gray-500"
-                          }`}
-                        >
-                          <div
-                            className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                              etapaSelecionadaIndex === idx
-                                ? "border-[#7C3AED]"
-                                : "border-gray-500"
-                            }`}
-                          >
-                            {etapaSelecionadaIndex === idx && (
-                              <div className="w-2 h-2 bg-[#7C3AED] rounded-full"></div>
-                            )}
-                          </div>
-                          <span
-                            className={`text-sm ${etapaSelecionadaIndex === idx ? "text-white" : "text-gray-300"}`}
-                          >
-                            {etapa}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
                   <div className="flex justify-end gap-3 pt-4 border-t border-[#30363D]">
                     <button
-                      onClick={() => {
-                        setCriandoMilestone(false);
-                        setMostrarInputEtapa(false);
-                        setEtapaSelecionadaIndex(null);
-                      }}
+                      onClick={() => setCriandoMilestone(false)}
                       className="text-gray-400 hover:text-white px-6 py-3 rounded-xl transition"
                     >
                       Cancelar
@@ -811,7 +591,7 @@ export default function Kanban() {
                   </div>
                 </div>
               ) : milestoneAtividade ? (
-                // TELA 2: MILESTONE CRIADO
+                // TELA 2: MILESTONE CRIADO (LIMPO, SEM CHECKBOX E PROGRESSO)
                 <div className="bg-[#161B22] rounded-2xl p-8 border border-[#30363D] relative shadow-lg">
                   <div className="flex justify-between items-start mb-2">
                     <h4 className="text-white text-3xl font-bold">
@@ -835,14 +615,6 @@ export default function Kanban() {
                                 dataPrevista: milestoneAtividade.dataPrevista,
                                 descricao: milestoneAtividade.descricao,
                               });
-                              setEtapasTemporarias(
-                                milestoneAtividade.etapas
-                                  ? milestoneAtividade.etapas.map(
-                                      (e: any) => e.nomeEtapa,
-                                    )
-                                  : [],
-                              );
-                              setEtapaSelecionadaIndex(null);
                               setCriandoMilestone(true);
                               setMenuMilestoneAberto(false);
                             }}
@@ -863,64 +635,15 @@ export default function Kanban() {
                       )}
                     </div>
                   </div>
-                  <p className="text-gray-400 mb-8 max-w-3xl leading-relaxed">
+                  <p className="text-gray-400 mb-6 max-w-3xl leading-relaxed">
                     {milestoneAtividade.descricao}
                   </p>
 
-                  <div className="space-y-4 mb-8">
-                    {(milestoneAtividade.etapas || [])
-                      .slice() 
-                      .sort((a: any, b: any) =>
-                        a.idEtapa.localeCompare(b.idEtapa),
-                      ) 
-                      .map((etapa: any, index: number) => (
-                        <div
-                          key={index}
-                          onClick={() => alternarStatusEtapa(etapa.idEtapa)}
-                          className={`flex items-center gap-4 p-4 rounded-xl border transition-all cursor-pointer ${etapa.concluida ? "border-green-600/50 bg-[#122A20]" : "border-[#30363D] bg-transparent hover:border-gray-500"}`}
-                        >
-                          <div
-                            className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${etapa.concluida ? "border-green-500" : "border-gray-500"}`}
-                          >
-                            {etapa.concluida && (
-                              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                            )}
-                          </div>
-                          <span
-                            className={`text-base ${etapa.concluida ? "text-gray-200" : "text-gray-400"}`}
-                          >
-                            {etapa.nomeEtapa}
-                          </span>
-                        </div>
-                      ))}
-                    {(!milestoneAtividade.etapas ||
-                      milestoneAtividade.etapas.length === 0) && (
-                      <p className="text-gray-500 italic">
-                        Nenhuma etapa cadastrada neste marco.
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="pt-2">
-                    <div className="flex justify-between items-end mb-3">
-                      <div>
-                        <p className="text-gray-500 text-sm mb-1">Prazo</p>
-                        <p className="text-gray-300 font-medium">
-                          {milestoneAtividade.dataPrevista}
-                        </p>
-                      </div>
-                      <p className="text-white font-bold text-lg">
-                        {milestoneAtividade.progresso || 0}%
-                      </p>
-                    </div>
-                    <div className="w-full bg-[#22272E] rounded-full h-3 overflow-hidden">
-                      <div
-                        className="bg-green-500 h-full rounded-full transition-all duration-500 ease-out"
-                        style={{
-                          width: `${milestoneAtividade.progresso || 0}%`,
-                        }}
-                      ></div>
-                    </div>
+                  <div className="pt-2 border-t border-[#30363D]/50 mt-4">
+                    <p className="text-gray-500 text-sm mb-1 mt-2">Data Prevista</p>
+                    <p className="text-gray-300 font-medium">
+                      {milestoneAtividade.dataPrevista}
+                    </p>
                   </div>
                 </div>
               ) : (
@@ -978,16 +701,6 @@ export default function Kanban() {
                             Editar
                           </button>
                         )}
-                        {/*<button
-                          onClick={() =>
-                            navigate(
-                              `/projetos/${idProjeto}/atividade/${atividadeDetalhe.idAtividade}/tarefas/${tarefa.idTarefa}/editar`,
-                            )
-                          }
-                          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition"
-                        >
-                          Editar
-                        </button>*/}
                         {podeEditar && (
                             <button
                           onClick={() => handleExcluir(tarefa.idTarefa)}
@@ -1005,75 +718,7 @@ export default function Kanban() {
         </div>
       )}
 
-      {/* MODAIS CUSTOMIZADOS (EDITAR / EXCLUIR) */}
-
-      {/* Modal de Editar Etapa AGORA EM ROXO */}
-      {modalEditarEtapaAberto && (
-        <div className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#1B1F27] border border-[#30363D] rounded-3xl w-full max-w-md p-8 shadow-2xl">
-            <h3 className="text-2xl font-bold text-white mb-6">Editar Etapa</h3>
-            <input
-              type="text"
-              autoFocus
-              value={nomeEtapaEditada}
-              onChange={(e) => setNomeEtapaEditada(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && confirmarEdicaoEtapa()}
-              className="bg-[#161B22] border border-[#30363D] rounded-xl p-4 w-full text-white focus:outline-none focus:border-[#7C3AED] mb-8"
-              placeholder="Nome da etapa..."
-            />
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={() => setModalEditarEtapaAberto(false)}
-                className="text-gray-400 hover:text-white px-6 py-3 rounded-xl transition font-medium"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={confirmarEdicaoEtapa}
-                className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white px-6 py-3 rounded-xl font-medium transition"
-              >
-                Salvar Alteração
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Modal de Excluir Etapa */}
-      {modalExcluirEtapaAberto && (
-        <div className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#1B1F27] border border-[#30363D] rounded-3xl w-full max-w-md p-8 shadow-2xl">
-            <div className="flex flex-col items-center text-center mb-8">
-              <div className="w-16 h-16 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-500 text-3xl mb-4">
-                !
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-2">
-                Excluir Etapa
-              </h3>
-              <p className="text-gray-400">
-                Tem certeza que deseja excluir esta etapa? Essa ação removerá o
-                item da lista e não poderá ser desfeita.
-              </p>
-            </div>
-            <div className="flex gap-3 w-full">
-              <button
-                onClick={() => setModalExcluirEtapaAberto(false)}
-                className="flex-1 bg-[#22272E] hover:bg-[#30363D] text-white px-6 py-3 rounded-xl transition font-medium"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={confirmarExclusaoEtapa}
-                className="flex-1 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-medium transition"
-              >
-                Sim, excluir
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* NOVO MODAL: Excluir Milestone Completa */}
+      {/* Modal de Excluir Milestone Completa */}
       {modalExcluirMilestoneAberto && (
         <div className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-[#1B1F27] border border-[#30363D] rounded-3xl w-full max-w-md p-8 shadow-2xl">
@@ -1089,8 +734,7 @@ export default function Kanban() {
                 <strong className="text-white">
                   "{milestoneAtividade?.nomeMilestone}"
                 </strong>{" "}
-                inteira? Isso removerá o marco e todas as suas etapas associadas
-                permanentemente.
+                permanentemente?
               </p>
             </div>
             <div className="flex gap-3 w-full">
@@ -1104,7 +748,7 @@ export default function Kanban() {
                 onClick={confirmarExclusaoMilestone}
                 className="flex-1 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-medium transition shadow-md shadow-red-600/10"
               >
-                Sim, excluir tudo
+                Sim, excluir
               </button>
             </div>
           </div>
